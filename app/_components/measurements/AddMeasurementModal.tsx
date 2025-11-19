@@ -1,0 +1,428 @@
+"use client";
+import Button from "../Button";
+import Form from "../Form";
+import Modal from "../modal/Modal";
+import Steps from "../steps/Steps";
+import { memo, useState } from "react";
+import { useModalContext } from "../modal/ModalContext";
+import { useStepsContext } from "../steps/StepsContext";
+
+function AddMeasurementModal() {
+  // Initial state
+  const initialState = {
+    name: "",
+    unit: "",
+    height: "",
+    weight: "",
+    bicep: "",
+    bodyShape: "",
+    postureNotes: "",
+    chest: "",
+    neck: "",
+    topLength: "",
+    shoulderWidth: "",
+    waist: "",
+    hip: "",
+    fit: "",
+    wrist: "",
+    sleeveStyle: "",
+    sleeveLength: "",
+    knee: "",
+    ankle: "",
+    outseam: "",
+    inseam: "",
+    allowance: 2,
+    rise: "",
+    thigh: "",
+    isDefault: "off",
+  };
+
+  // Close modal
+  const { close } = useModalContext();
+
+  // Steps context
+  const { setStep } = useStepsContext();
+
+  // Form data
+  const [form, setForm] = useState(initialState);
+
+  // Handle change
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+  };
+
+  // Handle close
+  const handleClose = () => {
+    setStep(1);
+    setForm(initialState);
+  };
+
+  // Cancel button
+  const Cancel = memo(() => (
+    <Button
+      size="sm"
+      color="white"
+      type="button"
+      onClick={() => {
+        handleClose();
+        close();
+      }}
+    >
+      Cancel
+    </Button>
+  ));
+
+  // Previous button
+  const Previous = memo(() => (
+    <Button
+      size="sm"
+      type="button"
+      color="white"
+      onClick={() => setStep((s) => s - 1)}
+    >
+      Previous
+    </Button>
+  ));
+
+  // Validate Step
+  const validateStep = (check: boolean) => check;
+
+  return (
+    <Modal.Window
+      title="Add measurement profile"
+      name="add-measurement"
+      onClose={handleClose}
+    >
+      <Form>
+        {/* Step 1 */}
+        <Steps.Step stepNumber={1}>
+          <Form.InputGroup>
+            <Form.Input
+              type="text"
+              placeholder="Profile name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
+            <Form.Select
+              label="Unit"
+              name="unit"
+              value={form.unit}
+              onChange={handleChange}
+              options={[
+                { name: "Centimeters", value: "cm" },
+                { name: "Inches", value: "in" },
+              ]}
+            />
+          </Form.InputGroup>
+          <Form.InputGroup>
+            <Form.Input
+              type="number"
+              placeholder="Height"
+              name="height"
+              value={form.height}
+              onChange={handleChange}
+              required
+            />
+            <Form.Input
+              type="number"
+              placeholder="Weight (kg)"
+              name="weight"
+              value={form.weight}
+              onChange={handleChange}
+              required
+            />
+          </Form.InputGroup>
+          <Form.InputGroup>
+            <Form.Select
+              label="Body shape"
+              value={form.bodyShape}
+              onChange={handleChange}
+              name="bodyShape"
+              options={[
+                { name: "Slim", value: "slim" },
+                { name: "Athletic", value: "athletic" },
+                { name: "Average", value: "average" },
+                { name: "Broad", value: "broad" },
+                { name: "Heavy", value: "heavy" },
+              ]}
+            />
+            <Form.Select
+              label="Preferred fit"
+              value={form.fit}
+              onChange={handleChange}
+              name="fit"
+              options={[
+                { name: "Regular", value: "regular" },
+                { name: "Slim", value: "slim" },
+                { name: "Relaxed", value: "relaxed" },
+              ]}
+            />
+          </Form.InputGroup>
+          <div className="flex flex-col-reverse items-center sm:flex-row gap-3">
+            <Cancel />
+            <div className="flex flex-1 gap-3 justify-end">
+              <Button
+                size="sm"
+                type="button"
+                onClick={() => setStep((s) => s + 1)}
+                disabled={validateStep(
+                  !form.name ||
+                    !form.unit ||
+                    !form.height ||
+                    !form.weight ||
+                    !form.bodyShape ||
+                    !form.fit
+                )}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </Steps.Step>
+        {/* Step 2 */}
+        <Steps.Step stepNumber={2}>
+          <Form.InputGroup>
+            <Form.Input
+              type="number"
+              placeholder="Neck"
+              name="neck"
+              value={form.neck}
+              onChange={handleChange}
+              required
+            />
+            <Form.Input
+              type="number"
+              required
+              placeholder="Shoulder width"
+              name="shoulderWidth"
+              value={form.shoulderWidth}
+              onChange={handleChange}
+            />
+          </Form.InputGroup>
+          <Form.InputGroup>
+            <Form.Input
+              type="number"
+              placeholder="Chest"
+              name="chest"
+              value={form.chest}
+              onChange={handleChange}
+              required
+            />
+            <Form.Input
+              type="number"
+              placeholder="Sleeve length"
+              name="sleeveLength"
+              value={form.sleeveLength}
+              onChange={handleChange}
+              required
+            />
+          </Form.InputGroup>
+          <Form.InputGroup>
+            <Form.Input
+              placeholder="Bicep"
+              value={form.bicep}
+              onChange={handleChange}
+              name="bicep"
+              required
+              type="number"
+            />
+            <Form.Input
+              placeholder="Wrist"
+              value={form.wrist}
+              onChange={handleChange}
+              name="wrist"
+              required
+              type="number"
+            />
+          </Form.InputGroup>
+          <Form.InputGroup>
+            <Form.Input
+              type="number"
+              placeholder="Top length"
+              name="topLength"
+              required
+              value={form.topLength}
+              onChange={handleChange}
+            />
+            <Form.Select
+              options={[
+                {
+                  name: "3/4 Length",
+                  value: "3/4 length",
+                },
+                {
+                  name: "Long sleeve",
+                  value: "long sleeve",
+                },
+              ]}
+              label="Sleeve style"
+              name="sleeveStyle"
+              value={form.sleeveStyle}
+              required
+              onChange={handleChange}
+            />
+          </Form.InputGroup>
+
+          <div className="flex flex-col-reverse items-center sm:flex-row gap-3">
+            <Cancel />
+            <div className="flex flex-1 gap-3 justify-end">
+              <Previous />
+              <Button
+                size="sm"
+                type="button"
+                onClick={() => setStep((s) => s + 1)}
+                disabled={validateStep(
+                  !form.neck ||
+                    !form.shoulderWidth ||
+                    !form.chest ||
+                    !form.sleeveLength ||
+                    !form.bicep ||
+                    !form.wrist ||
+                    !form.topLength ||
+                    !form.sleeveStyle
+                )}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </Steps.Step>
+        <Steps.Step stepNumber={3}>
+          <Form.InputGroup>
+            <Form.Input
+              type="number"
+              placeholder="Waist"
+              name="waist"
+              value={form.waist}
+              onChange={handleChange}
+              required
+            />
+            <Form.Input
+              type="number"
+              placeholder="Hip"
+              name="hip"
+              value={form.hip}
+              onChange={handleChange}
+              required
+            />
+          </Form.InputGroup>
+          <Form.InputGroup>
+            <Form.Input
+              type="number"
+              placeholder="Rise"
+              name="rise"
+              value={form.rise}
+              onChange={handleChange}
+              required
+            />
+            <Form.Input
+              type="number"
+              placeholder="Thigh"
+              name="thigh"
+              value={form.thigh}
+              onChange={handleChange}
+              required
+            />
+          </Form.InputGroup>
+          <Form.InputGroup>
+            <Form.Input
+              type="number"
+              placeholder="Knee"
+              name="knee"
+              value={form.knee}
+              onChange={handleChange}
+              required
+            />
+            <Form.Input
+              type="number"
+              placeholder="Ankle"
+              name="ankle"
+              value={form.ankle}
+              onChange={handleChange}
+              required
+            />
+          </Form.InputGroup>
+          <Form.InputGroup>
+            <Form.Input
+              type="number"
+              placeholder="Outseam"
+              name="outseam"
+              value={form.outseam}
+              onChange={handleChange}
+              required
+            />
+            <Form.Input
+              type="number"
+              placeholder="Inseam"
+              name="inseam"
+              value={form.inseam}
+              onChange={handleChange}
+              required
+            />
+          </Form.InputGroup>
+          <div className="flex flex-col-reverse items-center sm:flex-row gap-3">
+            <Cancel />
+            <div className="flex flex-1 gap-3 justify-end">
+              <Previous />
+              <Button
+                size="sm"
+                type="button"
+                onClick={() => setStep((s) => s + 1)}
+                disabled={validateStep(
+                  !form.waist ||
+                    !form.hip ||
+                    !form.rise ||
+                    !form.thigh ||
+                    !form.knee ||
+                    !form.ankle ||
+                    !form.outseam ||
+                    !form.inseam
+                )}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </Steps.Step>
+        <Steps.Step stepNumber={4}>
+          <Form.Input
+            type="number"
+            placeholder="Easy allowance"
+            name="allowance"
+            value={form.allowance}
+            onChange={handleChange}
+            required
+          />
+          <Form.Textarea placeholder="Posture notes (optional)" rows={6} />
+          <Form.CheckBox
+            label="Set as default"
+            name="isDefault"
+            value={form.isDefault}
+            onChange={handleChange}
+          />
+          <div className="flex flex-col-reverse items-center sm:flex-row gap-3">
+            <Cancel />
+            <div className="flex flex-1 gap-3 justify-end">
+              <Previous />
+              <Button
+                size="sm"
+                type="button"
+                onClick={() => console.log(form)}
+                disabled={validateStep(!form.allowance)}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
+        </Steps.Step>
+      </Form>
+    </Modal.Window>
+  );
+}
+
+export default AddMeasurementModal;

@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #121212;
+  --grey: #e1e1e1;
+  --color-grey: 210, 213, 217;
+  --color-border: 26, 27, 24;
+}
+
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    @apply appearance-none m-0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer utilities {
+  .link--underline {
+    @apply relative inline-block;
+    background-image: linear-gradient(to top, rgba(var(--color-border)) 0 0),
+      linear-gradient(to top, rgba(var(--color-grey)) 0 0);
+    background-position: left bottom, left bottom;
+    background-repeat: no-repeat;
+    background-size: 0% 0.08rem, 100% 0.08rem;
+    transition: background-size 0.3s ease;
+  }
+  .link--underline:hover {
+    background-size: 100% 0.08rem, 100% 0.08rem;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-grey: var(--grey);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-satoshi);
+}
+
+.satoshi {
+  font-family: var(--font-satoshi);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: 0.2px;
+}
+
+.button {
+  @apply cursor-pointer hover:*:scale-110 transition-transform;
+}
