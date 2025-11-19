@@ -76,7 +76,7 @@ function AddAddressModal() {
         <Form.Input type="text" placeholder="Address" name="address" required />
         <Form.Input type="text" placeholder="Phone" name="phone" required />
         <Form.CheckBox label="Set as default" name="isDefault" />
-        <div className="flex gap-3">
+        <div className="flex gap-3 mt-1">
           <Button size="sm" color="white" type="reset" onClick={() => close()}>
             Cancel
           </Button>

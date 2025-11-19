@@ -109,7 +109,7 @@ function EditAddressModal({
           defaultValue={address?.phone}
         />
         <Form.CheckBox label="Set as default" name="isDefault" />
-        <div className="flex gap-3">
+        <div className="flex gap-3 mt-1">
           <Button
             color="white"
             type="button"
