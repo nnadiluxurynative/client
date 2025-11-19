@@ -76,7 +76,7 @@ function Form({ children, className, message = null, ...rest }: FormProps) {
       )}
 
       {/* Content area: children are laid out vertically with consistent gaps */}
-      <div className="flex flex-col gap-y-5">{children}</div>
+      <div className="flex flex-col gap-y-4">{children}</div>
     </form>
   );
 }

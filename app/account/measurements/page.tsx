@@ -1,31 +1,32 @@
 "use client";
 // External libraries
 import Link from "next/link";
-import { BiHelpCircle } from "react-icons/bi";
 import { useEffect, useState } from "react";
+import { BiHelpCircle } from "react-icons/bi";
 
 import Button from "@/app/_components/Button";
 import Container from "@/app/_components/Container";
+import AddMeasurementModal from "@/app/_components/measurements/AddMeasurementModal";
 import Modal from "@/app/_components/modal/Modal";
 import Steps from "@/app/_components/steps/Steps";
-import AddMeasurementModal from "@/app/_components/measurements/AddMeasurementModal";
 
 // State and stores
+import DeleteMeasurementModal from "@/app/_components/measurements/DeleteMeasurementModal";
 import { useAuthStore } from "@/app/_stores/authStore";
+import { Measurement } from "@/app/_types/measurement";
 
 /**
  * Measurements page
  *
- * Displays a list of the user's saved measurement profiles and exposes
- * actions to add, edit, or delete profiles. Measurement profiles are
- * ordered with any default profile(s) shown first.
  */
 function page() {
-  // Retrieve authenticated user (zustand store)
+  // Retrieve authenticated user
   const { user } = useAuthStore();
 
+  // Address to modify
+  const [measurement, setMeasurement] = useState<Measurement | null>(null);
+
   // Prepare measurements array and sort so default profile(s) appear first.
-  // Using `?? []` ensures we always have an array to render safely.
   const measurements = (user?.measurements ?? []).sort((a, b) => {
     if (a.isDefault) return -1;
     if (b.isDefault) return 1;
@@ -119,7 +120,12 @@ function page() {
                     </Modal.Open>
                     {/* Delete measurement button */}
                     <Modal.Open opens="delete-measurement">
-                      <Button color="white">Delete</Button>
+                      <Button
+                        color="white"
+                        onClick={() => setMeasurement(profile)}
+                      >
+                        Delete
+                      </Button>
                     </Modal.Open>
                   </div>
                 </div>
@@ -170,6 +176,10 @@ function page() {
         {/* Add measurement modal */}
         <Steps>
           <AddMeasurementModal />
+          <DeleteMeasurementModal
+            id={measurement?._id}
+            onClose={() => setMeasurement(null)}
+          />
         </Steps>
       </Modal>
     </div>

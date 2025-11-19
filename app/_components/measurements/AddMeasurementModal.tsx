@@ -3,9 +3,13 @@ import Button from "../Button";
 import Form from "../Form";
 import Modal from "../modal/Modal";
 import Steps from "../steps/Steps";
+import useMutate from "@/app/_hooks/useMutate";
+import Spinner from "../Spinner";
 import { memo, useState } from "react";
 import { useModalContext } from "../modal/ModalContext";
 import { useStepsContext } from "../steps/StepsContext";
+import { useMeasurementStore } from "@/app/_stores/measurementStore";
+import { Measurement } from "@/app/_types/measurement";
 
 function AddMeasurementModal() {
   // Initial state
@@ -43,14 +47,27 @@ function AddMeasurementModal() {
   // Steps context
   const { setStep } = useStepsContext();
 
+  const { addMeasurement } = useMeasurementStore();
+
   // Form data
   const [form, setForm] = useState(initialState);
+
+  const [add, loading, message] = useMutate(addMeasurement);
 
   // Handle change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
+    const target = e.target as HTMLInputElement;
+    const { name } = target;
+
+    // If the control is a checkbox, use `checked` to represent state.
+    if (target.type === "checkbox") {
+      setForm({ ...form, [name]: target.checked ? "on" : "off" });
+      return;
+    }
+
+    const { value } = target;
     setForm({ ...form, [name]: value });
   };
 
@@ -70,6 +87,7 @@ function AddMeasurementModal() {
         handleClose();
         close();
       }}
+      disabled={loading}
     >
       Cancel
     </Button>
@@ -81,6 +99,7 @@ function AddMeasurementModal() {
       size="sm"
       type="button"
       color="white"
+      disabled={loading}
       onClick={() => setStep((s) => s - 1)}
     >
       Previous
@@ -90,13 +109,63 @@ function AddMeasurementModal() {
   // Validate Step
   const validateStep = (check: boolean) => check;
 
+  // Handle add measurement
+  const handleAddMeasurement = async () => {
+    // Construct payload
+    const payload: Measurement = {
+      name: form.name,
+      details: {
+        unit: form.unit,
+        body: {
+          height: Number(form.height),
+          weight: Number(form.weight),
+          bodyShape: form.bodyShape,
+          postureNotes: form.postureNotes,
+        },
+        top: {
+          chest: Number(form.chest),
+          neck: Number(form.neck),
+          bicep: Number(form.bicep),
+          wrist: Number(form.wrist),
+          shoulderWidth: Number(form.shoulderWidth),
+          sleeveLength: Number(form.sleeveLength),
+          topLength: Number(form.topLength),
+        },
+        trouser: {
+          waist: Number(form.waist),
+          hip: Number(form.hip),
+          rise: Number(form.rise),
+          thigh: Number(form.thigh),
+          knee: Number(form.knee),
+          ankle: Number(form.ankle),
+          outseam: Number(form.outseam),
+          inseam: Number(form.inseam),
+        },
+        preferences: {
+          fit: form.fit,
+          allowance: Number(form.allowance),
+          sleeveStyle: form.sleeveStyle,
+        },
+      },
+      isDefault: form.isDefault === "on" ? true : false,
+    };
+    // Send add request
+    await add({
+      data: payload,
+      onSuccess: () => {
+        handleClose();
+        close();
+      },
+    });
+  };
+
   return (
     <Modal.Window
       title="Add measurement profile"
       name="add-measurement"
       onClose={handleClose}
     >
-      <Form>
+      <Form message={message}>
         {/* Step 1 */}
         <Steps.Step stepNumber={1}>
           <Form.InputGroup>
@@ -402,7 +471,8 @@ function AddMeasurementModal() {
           <Form.CheckBox
             label="Set as default"
             name="isDefault"
-            value={form.isDefault}
+            // Controlled checkbox: checked when form.isDefault === 'on'
+            checked={form.isDefault === "on"}
             onChange={handleChange}
           />
           <div className="flex flex-col-reverse items-center sm:flex-row gap-3">
@@ -412,10 +482,10 @@ function AddMeasurementModal() {
               <Button
                 size="sm"
                 type="button"
-                onClick={() => console.log(form)}
-                disabled={validateStep(!form.allowance)}
+                onClick={handleAddMeasurement}
+                disabled={validateStep(!form.allowance) || loading}
               >
-                Save
+                {loading ? <Spinner /> : "Save"}
               </Button>
             </div>
           </div>

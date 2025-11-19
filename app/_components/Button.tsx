@@ -9,7 +9,7 @@ const colorClasses = {
   black:
     "bg-foreground text-background disabled:hover:bg-foreground hover:bg-black",
   white:
-    "bg-background text-foreground hover:border-gray-400 border border-gray-300",
+    "bg-background text-foreground disabled:hover:border-gray-300 hover:border-gray-400 border border-gray-300",
 };
 
 const sizeClasses = {
@@ -28,7 +28,7 @@ export default function Button({
   return (
     <button
       className={twMerge(
-        "font-medium transition-all tracking-[0.2px] disabled:opacity-80 disabled:cursor-not-allowed min-w-[120px] max-h-11 px-4 flex items-center justify-center cursor-pointer py-3",
+        "font-medium transition-all  disabled:opacity-80 disabled:cursor-not-allowed min-w-[120px] max-h-11 px-4 flex items-center justify-center cursor-pointer py-3",
         className && className,
         size && sizeClasses[size],
         color && colorClasses[color]

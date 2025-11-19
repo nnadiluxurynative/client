@@ -4,22 +4,22 @@ import Button from "../Button";
 import Modal from "../modal/Modal";
 import Spinner from "../Spinner";
 import { useModalContext } from "../modal/ModalContext";
-import { useAddresStore } from "@/app/_stores/addressStore";
+import { useMeasurementStore } from "@/app/_stores/measurementStore";
 
-function DeleteAddressModal({
+function DeleteMeasurementModal({
   id,
   onClose,
 }: {
   id: string | undefined;
   onClose?: () => void;
 }) {
-  // Delete address
-  const { deleteAddress } = useAddresStore();
-  const [remove, loading] = useMutate(deleteAddress);
+  // Delete measurement
+  const { deleteMeasurement } = useMeasurementStore();
+  const [remove, loading] = useMutate(deleteMeasurement);
   // Close modal
   const { close } = useModalContext();
 
-  // Delete address function
+  // Delete measurement function
   async function handleDelete(id: string | undefined) {
     if (id)
       await remove({
@@ -32,18 +32,18 @@ function DeleteAddressModal({
   }
 
   return (
-    <Modal.Window title="Delete address" name="delete-address">
-      <p>Are you sure you want to delete this address? </p>
+    <Modal.Window title="Delete measurement" name="delete-measurement">
+      <p>Are you sure you want to delete this measurement? </p>
       <div className="flex gap-3 mt-4">
         {/* Cancel button */}
         <Button
           color="white"
+          disabled={loading}
           size="sm"
           onClick={() => {
             onClose?.();
             close();
           }}
-          disabled={loading}
         >
           Cancel
         </Button>
@@ -61,4 +61,4 @@ function DeleteAddressModal({
   );
 }
 
-export default DeleteAddressModal;
+export default DeleteMeasurementModal;
