@@ -8,6 +8,7 @@ import { useModalContext } from "../modal/ModalContext";
 import { useAddresStore } from "@/app/_stores/addressStore";
 import { Address } from "@/app/_types/address";
 import { nigerianStates } from "@/app/_utils/constants";
+import { useRef } from "react";
 
 function EditAddressModal({
   address,
@@ -22,6 +23,14 @@ function EditAddressModal({
   const { updateAddress } = useAddresStore();
 
   const [update, loading, message] = useMutate(updateAddress);
+
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Handle close - reset form
+  const handleClose = () => {
+    formRef.current?.reset();
+    onClose?.();
+  };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -47,8 +56,12 @@ function EditAddressModal({
       );
   };
   return (
-    <Modal.Window title="Edit address" name="edit-address">
-      <Form onSubmit={handleSubmit} message={message}>
+    <Modal.Window
+      title="Edit address"
+      name="edit-address"
+      onClose={handleClose}
+    >
+      <Form onSubmit={handleSubmit} ref={formRef} message={message}>
         <Form.InputGroup>
           <Form.Input
             type="text"
@@ -102,7 +115,7 @@ function EditAddressModal({
             type="button"
             size="sm"
             onClick={() => {
-              onClose?.();
+              handleClose();
               close();
             }}
           >

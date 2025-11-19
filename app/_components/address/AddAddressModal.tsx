@@ -8,6 +8,7 @@ import { useModalContext } from "../modal/ModalContext";
 import { useAddresStore } from "@/app/_stores/addressStore";
 import { Address } from "@/app/_types/address";
 import { nigerianStates } from "@/app/_utils/constants";
+import { useRef } from "react";
 
 function AddAddressModal() {
   // Close modal
@@ -15,7 +16,15 @@ function AddAddressModal() {
   // Add address
   const { addAddress } = useAddresStore();
 
+  const formRef = useRef<HTMLFormElement>(null);
+
   const [add, loading, message] = useMutate(addAddress);
+
+  // Handle close - reset form
+  const handleClose = () => {
+    formRef.current?.reset();
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     // Prevent default submit
@@ -38,8 +47,8 @@ function AddAddressModal() {
     });
   };
   return (
-    <Modal.Window title="Add address" name="add-address">
-      <Form onSubmit={handleSubmit} message={message}>
+    <Modal.Window title="Add address" name="add-address" onClose={handleClose}>
+      <Form onSubmit={handleSubmit} ref={formRef} message={message}>
         <Form.InputGroup>
           <Form.Input
             type="text"

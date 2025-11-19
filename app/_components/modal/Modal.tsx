@@ -34,11 +34,11 @@ function Open({
   // Clone child with onClick event
   return cloneElement(children, {
     onClick: (e: React.MouseEvent<HTMLElement>) => {
-      // Open modal
-      setActive(opens);
-
       // Call original onClick if exists
       (children.props as any).onClick?.(e);
+      // Open modal asynchronously so any state set by the child's onClick
+      // has a chance to flush before the modal mounts.
+      setTimeout(() => setActive(opens), 50);
     },
   });
 }

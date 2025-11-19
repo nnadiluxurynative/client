@@ -5,40 +5,46 @@ import Modal from "../modal/Modal";
 import Steps from "../steps/Steps";
 import useMutate from "@/app/_hooks/useMutate";
 import Spinner from "../Spinner";
-import { memo, useState } from "react";
+import { memo, useState, useEffect } from "react";
 import { useModalContext } from "../modal/ModalContext";
 import { useStepsContext } from "../steps/StepsContext";
 import { useMeasurementStore } from "@/app/_stores/measurementStore";
 import { Measurement } from "@/app/_types/measurement";
 
-function AddMeasurementModal() {
+function EditMeasurementModal({
+  measurement,
+  onClose,
+}: {
+  measurement: Measurement | null;
+  onClose: () => void;
+}) {
   // Initial state
   const initialState = {
-    name: "",
-    unit: "",
-    height: "",
-    weight: "",
-    bicep: "",
-    bodyShape: "",
-    postureNotes: "",
-    chest: "",
-    neck: "",
-    topLength: "",
-    shoulderWidth: "",
-    waist: "",
-    hip: "",
-    fit: "",
-    wrist: "",
-    sleeveStyle: "",
-    sleeveLength: "",
-    knee: "",
-    ankle: "",
-    outseam: "",
-    inseam: "",
-    allowance: 2,
-    rise: "",
-    thigh: "",
-    isDefault: "off",
+    name: measurement?.name || "",
+    unit: measurement?.details.unit || "",
+    height: measurement?.details.body.height || 0,
+    weight: measurement?.details.body.weight || 0,
+    bicep: measurement?.details.top.bicep || 0,
+    bodyShape: measurement?.details.body.bodyShape || "",
+    postureNotes: measurement?.details.body.postureNotes || "",
+    chest: measurement?.details.top.chest || 0,
+    neck: measurement?.details.top.neck || 0,
+    topLength: measurement?.details.top.topLength || 0,
+    shoulderWidth: measurement?.details.top.shoulderWidth || 0,
+    waist: measurement?.details.trouser.waist || 0,
+    hip: measurement?.details.trouser.hip || 0,
+    fit: measurement?.details.preferences.fit || "",
+    wrist: measurement?.details.top.wrist || 0,
+    sleeveStyle: measurement?.details.preferences.sleeveStyle || "",
+    sleeveLength: measurement?.details.top.sleeveLength || 0,
+    knee: measurement?.details.trouser.knee || 0,
+    ankle: measurement?.details.trouser.ankle || 0,
+    outseam: measurement?.details.trouser.outseam || 0,
+    inseam: measurement?.details.trouser.inseam || 0,
+    allowance: measurement?.details.preferences.allowance || 0,
+    rise: measurement?.details.trouser.rise || 0,
+    thigh: measurement?.details.trouser.thigh || 0,
+    isDefault: measurement?.isDefault ? "on" : "off",
   };
 
   // Close modal
@@ -47,23 +53,25 @@ function AddMeasurementModal() {
   // Steps context
   const { setStep } = useStepsContext();
 
-  const { addMeasurement } = useMeasurementStore();
+  const { updateMeasurement } = useMeasurementStore();
 
   // Form data
   const [form, setForm] = useState(initialState);
 
-  const [add, loading, message] = useMutate(addMeasurement);
+  // Keep form in sync if `measurement` prop changes after mount.
+  useEffect(() => {
+    setForm(initialState);
+  }, [measurement]);
 
-  // Handle change for inputs, selects and textarea
+  const [update, loading, message] = useMutate(updateMeasurement);
+
+  // Handle change
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-    const target = e.target as
-      | HTMLInputElement
-      | HTMLSelectElement
-      | HTMLTextAreaElement;
+    const target = e.target;
     const { name } = target as { name: string };
 
     // If the control is an input checkbox, use `checked` to represent state.
@@ -81,7 +89,7 @@ function AddMeasurementModal() {
   // Handle close
   const handleClose = () => {
     setStep(1);
-    setForm(initialState);
+    onClose();
   };
 
   // Cancel button
@@ -116,8 +124,8 @@ function AddMeasurementModal() {
   // Validate Step
   const validateStep = (check: boolean) => check;
 
-  // Handle add measurement
-  const handleAddMeasurement = async () => {
+  // Handle update measurement
+  const handleUpdateMeasurement = async () => {
     // Construct payload
     const payload: Measurement = {
       name: form.name,
@@ -157,19 +165,23 @@ function AddMeasurementModal() {
       isDefault: form.isDefault === "on" ? true : false,
     };
     // Send add request
-    await add({
-      data: payload,
-      onSuccess: () => {
-        handleClose();
-        close();
-      },
-    });
+    if (measurement?._id)
+      await update(
+        {
+          data: payload,
+          onSuccess: () => {
+            handleClose();
+            close();
+          },
+        },
+        measurement._id
+      );
   };
 
   return (
     <Modal.Window
-      title="Add measurement profile"
-      name="add-measurement"
+      title="Edit measurement profile"
+      name="edit-measurement"
       onClose={handleClose}
     >
       <Form message={message}>
@@ -494,7 +506,7 @@ function AddMeasurementModal() {
               <Button
                 size="sm"
                 type="button"
-                onClick={handleAddMeasurement}
+                onClick={handleUpdateMeasurement}
                 disabled={validateStep(!form.allowance) || loading}
               >
                 {loading ? <Spinner /> : "Save"}
@@ -507,4 +519,4 @@ function AddMeasurementModal() {
   );
 }
 
-export default AddMeasurementModal;
+export default EditMeasurementModal;

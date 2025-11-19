@@ -14,6 +14,9 @@ import Steps from "@/app/_components/steps/Steps";
 import DeleteMeasurementModal from "@/app/_components/measurements/DeleteMeasurementModal";
 import { useAuthStore } from "@/app/_stores/authStore";
 import { Measurement } from "@/app/_types/measurement";
+import EditMeasurementModal from "@/app/_components/measurements/EditMeasurementModal";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import { twMerge } from "tailwind-merge";
 
 /**
  * Measurements page
@@ -35,7 +38,7 @@ function page() {
 
   // Pagination state
   const [page, setPage] = useState<number>(1);
-  const PAGE_SIZE = 3; // requested page size
+  const PAGE_SIZE = 2; // requested page size
 
   const totalPages = Math.max(1, Math.ceil(measurements.length / PAGE_SIZE));
   const startIndex = (page - 1) * PAGE_SIZE;
@@ -116,7 +119,12 @@ function page() {
                   <div className="flex justify-center gap-3 mt-4">
                     {/* Edit measurement button */}
                     <Modal.Open opens="edit-measurement">
-                      <Button color="white">Edit</Button>
+                      <Button
+                        color="white"
+                        onClick={() => setMeasurement(profile)}
+                      >
+                        Edit
+                      </Button>
                     </Modal.Open>
                     {/* Delete measurement button */}
                     <Modal.Open opens="delete-measurement">
@@ -132,41 +140,55 @@ function page() {
               ))}
               {/* Pagination controls */}
               {measurements.length > PAGE_SIZE && (
-                <div className="flex items-center justify-center gap-2 mt-4">
-                  <button
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    className="px-3 py-1 border rounded disabled:opacity-50"
-                    aria-label="Previous page"
-                  >
-                    Prev
-                  </button>
+                <div className="flex items-center justify-center gap-2 mt-6">
+                  {page > 1 && (
+                    <button
+                      onClick={() => {
+                        setPage((p) => Math.max(1, p - 1));
+                        // Scroll to top of measurements list
+                        window.scrollTo({ top: 0, behavior: "instant" });
+                      }}
+                      className="px-2 py-1 cursor-pointer button"
+                      aria-label="Previous page"
+                    >
+                      <BsChevronLeft size={16} />
+                    </button>
+                  )}
 
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-4">
                     {Array.from({ length: totalPages }).map((_, idx) => {
                       const pNum = idx + 1;
                       return (
                         <button
                           key={pNum}
-                          onClick={() => setPage(pNum)}
-                          className={`px-2 py-1 rounded ${
-                            pNum === page ? "bg-gray-800 text-white" : "border"
-                          }`}
-                          aria-current={pNum === page ? "page" : undefined}
+                          onClick={() => {
+                            setPage(pNum);
+                            // Scroll to top of measurements list
+                            window.scrollTo({ top: 0, behavior: "instant" });
+                          }}
+                          className={twMerge(
+                            `px-1 cursor-pointer border-transparent hover:border-[#121212] border-b`,
+                            pNum === page && "border-[#121212]"
+                          )}
                         >
                           {pNum}
                         </button>
                       );
                     })}
                   </div>
-                  <button
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={page === totalPages}
-                    className="px-3 py-1 border rounded disabled:opacity-50"
-                    aria-label="Next page"
-                  >
-                    Next
-                  </button>
+                  {page < totalPages && (
+                    <button
+                      onClick={() => {
+                        setPage((p) => Math.min(totalPages, p + 1));
+                        // Scroll to top of measurements list
+                        window.scrollTo({ top: 0, behavior: "instant" });
+                      }}
+                      className="px-2 py-1 cursor-pointer button"
+                      aria-label="Next page"
+                    >
+                      <BsChevronRight size={16} />
+                    </button>
+                  )}
                 </div>
               )}
               {/* Modals */}
@@ -176,8 +198,14 @@ function page() {
         {/* Add measurement modal */}
         <Steps>
           <AddMeasurementModal />
+          {/* Delete measurement modal */}
           <DeleteMeasurementModal
             id={measurement?._id}
+            onClose={() => setMeasurement(null)}
+          />
+          {/* Edit measurement modal */}
+          <EditMeasurementModal
+            measurement={measurement}
             onClose={() => setMeasurement(null)}
           />
         </Steps>

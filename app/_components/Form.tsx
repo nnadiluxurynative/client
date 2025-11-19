@@ -44,42 +44,57 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   options: { name: string; value: string }[];
 }
 
+import React from "react";
 /**
  * Top-level `Form` wrapper used across the app.
  * - Provides a standard vertical layout and optional inline message UI.
  * - Children typically use the attached subcomponents (Form.Input, Form.Select, etc.).
  */
-function Form({ children, className, message = null, ...rest }: FormProps) {
-  return (
-    <form
-      className={twMerge("flex flex-col gap-3", className && className)}
-      {...rest}
-    >
-      {/* Inline feedback message (success / error) shown above fields */}
-      {message && (
-        <div
-          className={twMerge(
-            "flex items-center gap-2 text-sm py-2 px-4",
-            message.type === "error" && "bg-[#FAE7EC]",
-            message.type === "success" && "bg-[#E7FAEC]"
-          )}
-        >
-          {/* Icon changes depending on message type */}
-          {message.type === "error" && (
-            <InfoCircle size={20} variant="Outline" color="#121212" />
-          )}
-          {message.type === "success" && (
-            <TickCircle size={20} variant="Outline" color="#121212" />
-          )}
-          <span>{message.message}</span>
-        </div>
-      )}
+type CompoundForm = React.ForwardRefExoticComponent<
+  FormProps & React.RefAttributes<HTMLFormElement>
+> & {
+  Textarea: typeof Textarea;
+  Input: typeof Input;
+  CheckBox: typeof CheckBox;
+  InputGroup: typeof InputGroup;
+  Select: typeof Select;
+};
 
-      {/* Content area: children are laid out vertically with consistent gaps */}
-      <div className="flex flex-col gap-y-4">{children}</div>
-    </form>
-  );
-}
+const Form = React.forwardRef<HTMLFormElement, FormProps>(
+  ({ children, className, message = null, ...rest }, ref) => {
+    return (
+      <form
+        ref={ref}
+        className={twMerge("flex flex-col gap-3", className && className)}
+        {...rest}
+      >
+        {/* Inline feedback message (success / error) shown above fields */}
+        {message && (
+          <div
+            className={twMerge(
+              "flex items-center gap-2 text-sm py-2 px-4",
+              message.type === "error" && "bg-[#FAE7EC]",
+              message.type === "success" && "bg-[#E7FAEC]"
+            )}
+          >
+            {/* Icon changes depending on message type */}
+            {message.type === "error" && (
+              <InfoCircle size={20} variant="Outline" color="#121212" />
+            )}
+            {message.type === "success" && (
+              <TickCircle size={20} variant="Outline" color="#121212" />
+            )}
+            <span>{message.message}</span>
+          </div>
+        )}
+
+        {/* Content area: children are laid out vertically with consistent gaps */}
+        <div className="flex flex-col gap-y-4">{children}</div>
+      </form>
+    );
+  }
+) as CompoundForm;
+Form.displayName = "Form";
 
 /**
  * Custom select with a floating label and chevron indicator.

@@ -109,6 +109,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       refreshAuth: async () => {
+        const { fetchOrders } = useOrdersStore.getState();
         const { logoutUser, user, accessToken } = get();
         try {
           // Will use cookie-based refresh token automatically
@@ -124,6 +125,9 @@ export const useAuthStore = create<AuthState>()(
 
           // Set user data
           set({ user: profileRes.data.data });
+
+          // Fetch user orders
+          await fetchOrders();
         } catch (err: any) {
           console.error("Refresh failed:", err);
 
