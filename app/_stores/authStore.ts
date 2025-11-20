@@ -140,15 +140,18 @@ export const useAuthStore = create<AuthState>()(
         // Send request
         try {
           await API.post("/auth/logout");
-        } catch {}
-        // Clear user and access token
-        setTimeout(() => {
-          set({ accessToken: null, user: null });
-        }, 2000);
-        // Clear persisted data from localStorage
-        localStorage.clear();
-        // Redirect to login
-        window.location.replace("/login");
+        } catch {
+        } finally {
+          // Clear user and access token
+          setTimeout(() => {
+            set({ accessToken: null, user: null });
+          }, 2000);
+          // Clear persisted data from localStorage
+          localStorage.clear();
+          // Redirect to login if on a protected route
+          if (window.location.pathname.startsWith("/account"))
+            window.location.replace("/login");
+        }
       },
     }),
     {

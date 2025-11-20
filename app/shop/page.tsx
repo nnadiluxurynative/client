@@ -1,8 +1,10 @@
 "use client";
 import Button from "@/app/_components/Button";
 import Container from "@/app/_components/Container";
+import ProductItem from "@/app/_components/ProductItem";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { BsChevronDown } from "react-icons/bs";
 
 interface Product {
   id: number;
@@ -19,12 +21,18 @@ function page() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [sortBy, setSortBy] = useState("featured");
-  const [filterPrice, setFilterPrice] = useState("all");
-  const [selectedImage, setSelectedImage] = useState<{ [key: number]: number }>(
-    {}
-  );
-  const itemsPerPage = 3;
+  // Read from URL on mount and when searchParams change
+  const urlSort = searchParams.get("sort") || "featured";
+  const urlPrice = searchParams.get("price") || "all";
+  const [sortBy, setSortBy] = useState(urlSort);
+  const [filterPrice, setFilterPrice] = useState(urlPrice);
+
+  // Keep state in sync with URL
+  useEffect(() => {
+    setSortBy(urlSort);
+    setFilterPrice(urlPrice);
+  }, [urlSort, urlPrice]);
+  const itemsPerPage = 12;
 
   // Get current page from URL, default to 1
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
@@ -34,12 +42,11 @@ function page() {
       id: 1,
       name: "Premium Silk Dress",
       price: 299.99,
-      image:
-        "https://images.unsplash.com/photo-1612336307429-8a88e8d08ee3?w=500&h=500&fit=crop",
+      image: "https://picsum.photos/id/1011/500/500",
       images: [
-        "https://images.unsplash.com/photo-1612336307429-8a88e8d08ee3?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1595777744076-f49d6854e48f?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1618932260643-30f39d8e87f7?w=500&h=500&fit=crop",
+        "https://picsum.photos/id/1011/500/500",
+        "https://picsum.photos/id/1012/500/500",
+        "https://picsum.photos/id/1013/500/500",
       ],
       rating: 4.8,
       reviews: 127,
@@ -49,12 +56,11 @@ function page() {
       id: 2,
       name: "Luxury Evening Gown",
       price: 599.99,
-      image:
-        "https://images.unsplash.com/photo-1595777744076-f49d6854e48f?w=500&h=500&fit=crop",
+      image: "https://picsum.photos/id/1020/500/500",
       images: [
-        "https://images.unsplash.com/photo-1595777744076-f49d6854e48f?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1618932260643-30f39d8e87f7?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1644795566246-0e2fcbb75791?w=500&h=500&fit=crop",
+        "https://picsum.photos/id/1020/500/500",
+        "https://picsum.photos/id/1021/500/500",
+        "https://picsum.photos/id/1022/500/500",
       ],
       rating: 4.9,
       reviews: 89,
@@ -64,12 +70,11 @@ function page() {
       id: 3,
       name: "Elegant Cocktail Dress",
       price: 349.99,
-      image:
-        "https://images.unsplash.com/photo-1618932260643-30f39d8e87f7?w=500&h=500&fit=crop",
+      image: "https://picsum.photos/id/1035/500/500",
       images: [
-        "https://images.unsplash.com/photo-1618932260643-30f39d8e87f7?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1612336307429-8a88e8d08ee3?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1595777744076-f49d6854e48f?w=500&h=500&fit=crop",
+        "https://picsum.photos/id/1035/500/500",
+        "https://picsum.photos/id/1036/500/500",
+        "https://picsum.photos/id/1037/500/500",
       ],
       rating: 4.7,
       reviews: 156,
@@ -78,12 +83,11 @@ function page() {
       id: 4,
       name: "Sophisticated Blazer",
       price: 249.99,
-      image:
-        "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=500&h=500&fit=crop",
+      image: "https://picsum.photos/id/1041/500/500",
       images: [
-        "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1539533057440-7069f9ef46f5?w=500&h=500&fit=crop",
+        "https://picsum.photos/id/1041/500/500",
+        "https://picsum.photos/id/1042/500/500",
+        "https://picsum.photos/id/1043/500/500",
       ],
       rating: 4.6,
       reviews: 203,
@@ -92,12 +96,11 @@ function page() {
       id: 5,
       name: "Designer Jumpsuit",
       price: 399.99,
-      image:
-        "https://images.unsplash.com/photo-1590080876017-d91850f42f78?w=500&h=500&fit=crop",
+      image: "https://picsum.photos/id/1050/500/500",
       images: [
-        "https://images.unsplash.com/photo-1590080876017-d91850f42f78?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1534070712277-fdf500671ae0?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1539533057440-7069f9ef46f5?w=500&h=500&fit=crop",
+        "https://picsum.photos/id/1050/500/500",
+        "https://picsum.photos/id/1051/500/500",
+        "https://picsum.photos/id/1052/500/500",
       ],
       rating: 4.8,
       reviews: 92,
@@ -106,12 +109,11 @@ function page() {
       id: 6,
       name: "Luxe Wool Coat",
       price: 449.99,
-      image:
-        "https://images.unsplash.com/photo-1539533057440-7069f9ef46f5?w=500&h=500&fit=crop",
+      image: "https://picsum.photos/id/1066/500/500",
       images: [
-        "https://images.unsplash.com/photo-1539533057440-7069f9ef46f5?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1551028719-00167b16ebc5?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=500&h=500&fit=crop",
+        "https://picsum.photos/id/1066/500/500",
+        "https://picsum.photos/id/1067/500/500",
+        "https://picsum.photos/id/1068/500/500",
       ],
       rating: 4.9,
       reviews: 178,
@@ -121,12 +123,11 @@ function page() {
       id: 7,
       name: "Tailored Trousers",
       price: 179.99,
-      image:
-        "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=500&h=500&fit=crop",
+      image: "https://picsum.photos/id/1070/500/500",
       images: [
-        "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1552747260-5b8fadc55df4?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=500&h=500&fit=crop",
+        "https://picsum.photos/id/1070/500/500",
+        "https://picsum.photos/id/1071/500/500",
+        "https://picsum.photos/id/1072/500/500",
       ],
       rating: 4.5,
       reviews: 145,
@@ -135,12 +136,11 @@ function page() {
       id: 8,
       name: "Silk Blouse",
       price: 129.99,
-      image:
-        "https://images.unsplash.com/photo-1589715389088-74c6b4e8e9b4?w=500&h=500&fit=crop",
+      image: "https://picsum.photos/id/1080/500/500",
       images: [
-        "https://images.unsplash.com/photo-1589715389088-74c6b4e8e9b4?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1585399404843-f38da5ad0d13?w=500&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1612336307429-8a88e8d08ee3?w=500&h=500&fit=crop",
+        "https://picsum.photos/id/1080/500/500",
+        "https://picsum.photos/id/1081/500/500",
+        "https://picsum.photos/id/1082/500/500",
       ],
       rating: 4.7,
       reviews: 201,
@@ -178,6 +178,12 @@ function page() {
       case "rating":
         filtered = filtered.sort((a, b) => b.rating - a.rating);
         break;
+      case "a-z":
+        filtered = filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "z-a":
+        filtered = filtered.sort((a, b) => b.name.localeCompare(a.name));
+        break;
     }
 
     return filtered;
@@ -193,60 +199,80 @@ function page() {
     startIndex + itemsPerPage
   );
 
-  // Reset to page 1 when filters change
+  // Update URL when filters change
   const handleFilterChange = (newSort?: string, newPrice?: string) => {
     const sort = newSort ?? sortBy;
     const price = newPrice ?? filterPrice;
-    setSortBy(sort);
-    setFilterPrice(price);
-    router.push("/shop?page=1");
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sort", sort);
+    params.set("price", price);
+    params.set("page", "1");
+    router.push(`/shop?${params.toString()}`);
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="py-12">
       {/* Filters and Sort */}
-      <div className="border-b border-slate-200">
+      <div>
         <Container>
-          <Container.Row>
-            <Container.Row.Column className="max-w-6xl mx-auto py-6">
+          <Container.Row className="flex-col gap-y-0">
+            <Container.Row.Column className="mb-8">
+              <h1 className="text-3xl w-full text-center sm:text-4xl font-medium">
+                Shop
+              </h1>
+            </Container.Row.Column>
+            <Container.Row.Column className="">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                <div>
-                  <p className="text-sm text-slate-600">
-                    Showing{" "}
-                    <span className="font-semibold">
-                      {paginatedProducts.length}
-                    </span>{" "}
-                    of{" "}
-                    <span className="font-semibold">
-                      {filteredProducts.length}
-                    </span>{" "}
-                    products
-                  </p>
+                <div className="flex gap-3 items-center">
+                  <span className="font-medium">Filter:</span>
+                  <div className="relative">
+                    <select
+                      value={filterPrice}
+                      onChange={(e) =>
+                        handleFilterChange(sortBy, e.target.value)
+                      }
+                      className="appearance-none px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+                    >
+                      <option value="all">All Prices</option>
+                      <option value="under-200">Under ₦200K</option>
+                      <option value="200-400">₦200K - ₦300K</option>
+                      <option value="over-400">Over ₦300K</option>
+                    </select>
+                    <BsChevronDown
+                      size={16}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <select
-                    value={sortBy}
-                    onChange={(e) =>
-                      handleFilterChange(e.target.value, filterPrice)
-                    }
-                    className="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
-                  >
-                    <option value="featured">Featured</option>
-                    <option value="newest">Newest</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="rating">Best Rated</option>
-                  </select>
-                  <select
-                    value={filterPrice}
-                    onChange={(e) => handleFilterChange(sortBy, e.target.value)}
-                    className="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
-                  >
-                    <option value="all">All Prices</option>
-                    <option value="under-200">Under $200</option>
-                    <option value="200-400">$200 - $400</option>
-                    <option value="over-400">Over $400</option>
-                  </select>
+                <div className="flex items-center gap-8">
+                  <div className="flex items-center gap-3">
+                    <span className="font-medium">Sort By:</span>
+                    <div className="relative">
+                      <select
+                        value={sortBy}
+                        onChange={(e) =>
+                          handleFilterChange(e.target.value, filterPrice)
+                        }
+                        className="appearance-none px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+                      >
+                        <option value="featured">Featured</option>
+                        <option value="newest">Newest</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="a-z">A-Z</option>
+                        <option value="z-a">Z-A</option>
+                      </select>
+                      <BsChevronDown
+                        size={16}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                      />
+                    </div>
+                  </div>
+                  <span>
+                    <p className="text-sm">
+                      {filteredProducts.length} products
+                    </p>
+                  </span>
                 </div>
               </div>
             </Container.Row.Column>
@@ -256,63 +282,12 @@ function page() {
 
       {/* Products Grid */}
       <Container>
-        <Container.Row className="py-12">
-          <Container.Row.Column className="max-w-6xl mx-auto w-full">
+        <Container.Row className="pb-12 py-10">
+          <Container.Row.Column className="">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {paginatedProducts.map((product) => {
-                const currentImageIndex = selectedImage[product.id] || 0;
-                const currentImage = product.images[currentImageIndex];
-                return (
-                  <div key={product.id} className="group">
-                    {/* Product Image Gallery */}
-                    <div
-                      className="relative mb-4 overflow-hidden bg-slate-100 aspect-square"
-                      onMouseLeave={() =>
-                        setSelectedImage({ ...selectedImage, [product.id]: 0 })
-                      }
-                    >
-                      <img
-                        src={currentImage}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      {/* Image Hover Zones */}
-                      {product.images.length > 1 && (
-                        <>
-                          {product.images.map((img, idx) => (
-                            <div
-                              key={idx}
-                              className="absolute top-0 bottom-0 cursor-pointer"
-                              style={{
-                                left: `${(idx / product.images.length) * 100}%`,
-                                width: `${100 / product.images.length}%`,
-                              }}
-                              onMouseEnter={() =>
-                                setSelectedImage({
-                                  ...selectedImage,
-                                  [product.id]: idx,
-                                })
-                              }
-                            />
-                          ))}
-                        </>
-                      )}
-                    </div>
-
-                    {/* Product Info */}
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-semibold text-slate-900 group-hover:text-slate-700 transition-colors line-clamp-2">
-                        {product.name}
-                      </h3>
-
-                      {/* Price */}
-                      <p className="text-lg font-bold text-slate-900">
-                        ${product.price.toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+              {paginatedProducts.map((product) => (
+                <ProductItem key={product.id} product={product} />
+              ))}
             </div>
 
             {/* Pagination */}

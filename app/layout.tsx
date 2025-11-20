@@ -40,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`flex flex-col min-h-screen ${satoshi.variable} ${satoshi.className}`}
+        className={`flex flex-col min-h-screen bg-white ${satoshi.variable} ${satoshi.className}`}
       >
         <div className="flex-1">
           <HydrationGate>

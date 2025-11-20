@@ -3,7 +3,7 @@ export const links = [
   { name: "Home", href: "/" },
   { name: "Shop", href: "/shop" },
   { name: "Size Chart", href: "/size-chart" },
-  { name: "FAQ", href: "/faq" },
+  { name: "FAQ", href: "/faqs" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
 ];

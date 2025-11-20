@@ -103,15 +103,9 @@ function page() {
                         </td>
                       </tr>
                       <tr>
-                        <td className="p-0.5 font-medium text-left">Chest</td>
+                        <td className="p-0.5 font-medium text-left">Weight</td>
                         <td className="text-right p-0.5">
-                          {profile.details.top.chest} {profile.details.unit}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="p-0.5 font-medium text-left">Waist</td>
-                        <td className="text-right p-0.5">
-                          {profile.details.trouser.waist} {profile.details.unit}
+                          {profile.details.body.weight} {profile.details.unit}
                         </td>
                       </tr>
                     </tbody>
