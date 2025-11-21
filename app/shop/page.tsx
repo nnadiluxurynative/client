@@ -1,25 +1,25 @@
 "use client";
 import Button from "@/app/_components/Button";
 import Container from "@/app/_components/Container";
-import ProductItem from "@/app/_components/ProductItem";
+import ProductItem from "@/app/_components/product/ProductItem";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
+import type { Product } from "@/app/_types/product";
 import { BsChevronDown } from "react-icons/bs";
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  images: string[];
-  rating: number;
-  reviews: number;
-  badge?: string;
-}
+import useProductStore from "../_stores/productStore";
+import useMutate from "../_hooks/useMutate";
 
 function page() {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const { fetchProducts, products } = useProductStore.getState();
+
+  const [fetch, loading, message] = useMutate(fetchProducts);
+
+  useEffect(() => {
+    fetch({ data: null });
+  }, [fetchProducts]);
 
   // Read from URL on mount and when searchParams change
   const urlSort = searchParams.get("sort") || "featured";
@@ -37,152 +37,56 @@ function page() {
   // Get current page from URL, default to 1
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
 
-  const products: Product[] = [
-    {
-      id: 1,
-      name: "Premium Silk Dress",
-      price: 299.99,
-      image: "https://picsum.photos/id/1011/500/500",
-      images: [
-        "https://picsum.photos/id/1011/500/500",
-        "https://picsum.photos/id/1012/500/500",
-        "https://picsum.photos/id/1013/500/500",
-      ],
-      rating: 4.8,
-      reviews: 127,
-      badge: "New",
-    },
-    {
-      id: 2,
-      name: "Luxury Evening Gown",
-      price: 599.99,
-      image: "https://picsum.photos/id/1020/500/500",
-      images: [
-        "https://picsum.photos/id/1020/500/500",
-        "https://picsum.photos/id/1021/500/500",
-        "https://picsum.photos/id/1022/500/500",
-      ],
-      rating: 4.9,
-      reviews: 89,
-      badge: "Sale",
-    },
-    {
-      id: 3,
-      name: "Elegant Cocktail Dress",
-      price: 349.99,
-      image: "https://picsum.photos/id/1035/500/500",
-      images: [
-        "https://picsum.photos/id/1035/500/500",
-        "https://picsum.photos/id/1036/500/500",
-        "https://picsum.photos/id/1037/500/500",
-      ],
-      rating: 4.7,
-      reviews: 156,
-    },
-    {
-      id: 4,
-      name: "Sophisticated Blazer",
-      price: 249.99,
-      image: "https://picsum.photos/id/1041/500/500",
-      images: [
-        "https://picsum.photos/id/1041/500/500",
-        "https://picsum.photos/id/1042/500/500",
-        "https://picsum.photos/id/1043/500/500",
-      ],
-      rating: 4.6,
-      reviews: 203,
-    },
-    {
-      id: 5,
-      name: "Designer Jumpsuit",
-      price: 399.99,
-      image: "https://picsum.photos/id/1050/500/500",
-      images: [
-        "https://picsum.photos/id/1050/500/500",
-        "https://picsum.photos/id/1051/500/500",
-        "https://picsum.photos/id/1052/500/500",
-      ],
-      rating: 4.8,
-      reviews: 92,
-    },
-    {
-      id: 6,
-      name: "Luxe Wool Coat",
-      price: 449.99,
-      image: "https://picsum.photos/id/1066/500/500",
-      images: [
-        "https://picsum.photos/id/1066/500/500",
-        "https://picsum.photos/id/1067/500/500",
-        "https://picsum.photos/id/1068/500/500",
-      ],
-      rating: 4.9,
-      reviews: 178,
-      badge: "Best Seller",
-    },
-    {
-      id: 7,
-      name: "Tailored Trousers",
-      price: 179.99,
-      image: "https://picsum.photos/id/1070/500/500",
-      images: [
-        "https://picsum.photos/id/1070/500/500",
-        "https://picsum.photos/id/1071/500/500",
-        "https://picsum.photos/id/1072/500/500",
-      ],
-      rating: 4.5,
-      reviews: 145,
-    },
-    {
-      id: 8,
-      name: "Silk Blouse",
-      price: 129.99,
-      image: "https://picsum.photos/id/1080/500/500",
-      images: [
-        "https://picsum.photos/id/1080/500/500",
-        "https://picsum.photos/id/1081/500/500",
-        "https://picsum.photos/id/1082/500/500",
-      ],
-      rating: 4.7,
-      reviews: 201,
-    },
-  ];
-
-  // Filter and sort products
+  // Filter and sort products (adapted to shared `Product` type)
   const getFilteredAndSortedProducts = () => {
-    let filtered = [...products];
+    // Ensure we copy the array before mutating (sort/reverse)
+    let filtered: Product[] = [...(products as Product[])];
+
+    // Helper to derive a numeric price from the product
+    const priceOf = (p: Product) => p.materials?.[0]?.price ?? 0;
 
     // Filter by price
     switch (filterPrice) {
       case "under-200":
-        filtered = filtered.filter((p) => p.price < 200);
+        filtered = filtered.filter((p) => priceOf(p) < 200000);
         break;
-      case "200-400":
-        filtered = filtered.filter((p) => p.price >= 200 && p.price <= 400);
+      case "200-300":
+        filtered = filtered.filter(
+          (p) => priceOf(p) >= 200000 && priceOf(p) <= 300000
+        );
         break;
-      case "over-400":
-        filtered = filtered.filter((p) => p.price > 400);
+      case "over-300":
+        filtered = filtered.filter((p) => priceOf(p) > 300000);
         break;
     }
 
     // Sort
     switch (sortBy) {
       case "newest":
-        filtered = filtered.reverse();
+        filtered = filtered.sort((a, b) => {
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return dateB - dateA;
+        });
         break;
       case "price-low":
-        filtered = filtered.sort((a, b) => a.price - b.price);
+        filtered = filtered.sort((a, b) => priceOf(a) - priceOf(b));
         break;
       case "price-high":
-        filtered = filtered.sort((a, b) => b.price - a.price);
+        filtered = filtered.sort((a, b) => priceOf(b) - priceOf(a));
         break;
-      case "rating":
-        filtered = filtered.sort((a, b) => b.rating - a.rating);
+      case "featured":
+        filtered = filtered.filter((p) => p.isFeatured);
         break;
       case "a-z":
-        filtered = filtered.sort((a, b) => a.name.localeCompare(b.name));
+        filtered = filtered.sort((a, b) =>
+          (a.title ?? "").localeCompare(b.title ?? "")
+        );
         break;
       case "z-a":
-        filtered = filtered.sort((a, b) => b.name.localeCompare(a.name));
+        filtered = filtered.sort((a, b) =>
+          (b.title ?? "").localeCompare(a.title ?? "")
+        );
         break;
     }
 
@@ -235,8 +139,8 @@ function page() {
                     >
                       <option value="all">All Prices</option>
                       <option value="under-200">Under ₦200K</option>
-                      <option value="200-400">₦200K - ₦300K</option>
-                      <option value="over-400">Over ₦300K</option>
+                      <option value="200-300">₦200K - ₦300K</option>
+                      <option value="over-300">Over ₦300K</option>
                     </select>
                     <BsChevronDown
                       size={16}
@@ -286,7 +190,7 @@ function page() {
           <Container.Row.Column className="">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {paginatedProducts.map((product) => (
-                <ProductItem key={product.id} product={product} />
+                <ProductItem key={product._id} product={product} />
               ))}
             </div>
 

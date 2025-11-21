@@ -1,16 +1,6 @@
 "use client";
 import { useState } from "react";
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  images: string[];
-  rating: number;
-  reviews: number;
-  badge?: string;
-}
+import type { Product } from "@/app/_types/product";
 
 export default function ProductItem({ product }: { product: Product }) {
   const [hoverIndex, setHoverIndex] = useState(0);
@@ -23,7 +13,12 @@ export default function ProductItem({ product }: { product: Product }) {
 
   const handleMouseLeave = () => setHoverIndex(0);
 
-  const currentImage = product.images?.[hoverIndex] ?? product.image;
+  // Product images in the shared type are objects { url, public_id }
+  const currentImage =
+    product.images?.[hoverIndex]?.url ?? product.images?.[0]?.url ?? "";
+
+  // Derive a display price from the first material if present
+  const displayPrice = product.materials?.[0]?.price ?? null;
 
   return (
     <div
@@ -31,17 +26,18 @@ export default function ProductItem({ product }: { product: Product }) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="relative mb-4 overflow-hidden bg-slate-100 aspect-square">
+      <div className="relative mb-3 overflow-hidden bg-slate-100">
         <img
           src={currentImage}
-          alt={product.name}
+          alt={product.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
       </div>
-
       <div>
-        <h3 className="text-lg font-medium">{product.name}</h3>
-        <p className="mt-1 font-semibold">${product.price.toFixed(2)}</p>
+        <h3 className="text-lg font-medium">{product.title}</h3>
+        <p className="mt-1">
+          {displayPrice !== null ? `₦${displayPrice.toFixed(2)}` : "—"}
+        </p>
       </div>
     </div>
   );
