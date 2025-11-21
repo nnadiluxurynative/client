@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { Product } from "@/app/_types/product";
+import { formatNaira } from "@/app/_utils/helpers";
 
 export default function ProductItem({ product }: { product: Product }) {
   const [hoverIndex, setHoverIndex] = useState(0);
@@ -36,7 +37,7 @@ export default function ProductItem({ product }: { product: Product }) {
       <div>
         <h3 className="text-lg font-medium">{product.title}</h3>
         <p className="mt-1">
-          {displayPrice !== null ? `₦${displayPrice.toFixed(2)}` : "—"}
+          {displayPrice !== null ? formatNaira(Number(displayPrice)) : "—"}
         </p>
       </div>
     </div>

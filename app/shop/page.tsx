@@ -1,13 +1,12 @@
 "use client";
-import Button from "@/app/_components/Button";
 import Container from "@/app/_components/Container";
 import ProductItem from "@/app/_components/product/ProductItem";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, use } from "react";
 import type { Product } from "@/app/_types/product";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
-import useProductStore from "../_stores/productStore";
 import useMutate from "../_hooks/useMutate";
+import useProductStore from "../_stores/productStore";
 
 function page() {
   const router = useRouter();
@@ -22,7 +21,7 @@ function page() {
   }, [fetchProducts]);
 
   // Read from URL on mount and when searchParams change
-  const urlSort = searchParams.get("sort") || "featured";
+  const urlSort = searchParams.get("sort") || "newest";
   const urlPrice = searchParams.get("price") || "all";
   const [sortBy, setSortBy] = useState(urlSort);
   const [filterPrice, setFilterPrice] = useState(urlPrice);
@@ -159,8 +158,8 @@ function page() {
                         }
                         className="appearance-none px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
                       >
-                        <option value="featured">Featured</option>
                         <option value="newest">Newest</option>
+                        <option value="featured">Featured</option>
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
                         <option value="a-z">A-Z</option>
@@ -186,55 +185,54 @@ function page() {
 
       {/* Products Grid */}
       <Container>
-        <Container.Row className="pb-12 py-10">
+        <Container.Row className="pb-12 py-10 gap-10">
           <Container.Row.Column className="">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {paginatedProducts.map((product) => (
                 <ProductItem key={product._id} product={product} />
               ))}
             </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-12">
-                <button
-                  onClick={() =>
-                    router.push(`/shop?page=${Math.max(1, currentPage - 1)}`)
-                  }
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 border border-slate-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors"
-                >
-                  Previous
-                </button>
-
-                {[...Array(totalPages)].map((_, idx) => (
-                  <button
-                    key={idx + 1}
-                    onClick={() => router.push(`/shop?page=${idx + 1}`)}
-                    className={`px-3 py-2 rounded-lg transition-colors ${
-                      currentPage === idx + 1
-                        ? "bg-slate-900 text-white"
-                        : "border border-slate-300 hover:bg-slate-100"
-                    }`}
-                  >
-                    {idx + 1}
-                  </button>
-                ))}
-
-                <button
-                  onClick={() =>
-                    router.push(
-                      `/shop?page=${Math.min(totalPages, currentPage + 1)}`
-                    )
-                  }
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 border border-slate-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors"
-                >
-                  Next
-                </button>
-              </div>
-            )}
           </Container.Row.Column>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-12">
+              <button
+                onClick={() =>
+                  router.push(`/shop?page=${Math.max(1, currentPage - 1)}`)
+                }
+                disabled={currentPage === 1}
+                className="px-4 py-2 border border-slate-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors"
+              >
+                Previous
+              </button>
+
+              {[...Array(totalPages)].map((_, idx) => (
+                <button
+                  key={idx + 1}
+                  onClick={() => router.push(`/shop?page=${idx + 1}`)}
+                  className={`px-3 py-2 rounded-lg transition-colors ${
+                    currentPage === idx + 1
+                      ? "bg-slate-900 text-white"
+                      : "border border-slate-300 hover:bg-slate-100"
+                  }`}
+                >
+                  {idx + 1}
+                </button>
+              ))}
+
+              <button
+                onClick={() =>
+                  router.push(
+                    `/shop?page=${Math.min(totalPages, currentPage + 1)}`
+                  )
+                }
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 border border-slate-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </Container.Row>
       </Container>
     </div>
