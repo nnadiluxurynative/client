@@ -31,7 +31,7 @@ import { useEffect, useState } from "react";
 export default function useQuery<TData>(
   apiFunction: (...args: any[]) => Promise<TData>
 ) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<TData | null>(null);
   const [message, setMessage] = useState<{
     type: "success" | "error";

@@ -15,7 +15,7 @@ const colorClasses = {
 const sizeClasses = {
   sm: "min-w-[100px] max-h-10 px-3 py-3 text-sm",
   md: "min-w-[120px] max-h-11 px-4 py-3 text-base", // your current default
-  lg: "min-w-[150px] max-h-13 px-6 py-4 text-lg",
+  lg: "min-w-[150px] max-h-13 px-6 py-4 text-base",
 };
 
 export default function Button({

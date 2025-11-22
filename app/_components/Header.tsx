@@ -1,6 +1,7 @@
 "use client";
 import { Bag2, SearchNormal1, User } from "iconsax-react";
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useAuthStore } from "../_stores/authStore";
 import Link from "next/link";
 import Container from "./Container";
@@ -23,13 +24,14 @@ function Header() {
   const headerRef = useRef<HTMLElement>(null);
 
   // Header is currently visible/sticky
-  const [isSticky, setIsSticky] = useState(false);
-
-  // Header has entered sticky mode at least once
-  const [hasOpened, setHasOpened] = useState(false);
-
-  // User has scrolled past header height
-  const [isPastHeader, setIsPastHeader] = useState(false);
+  // Whether header is hidden (scrolled down) or visible
+  const [isHidden, setIsHidden] = useState(false);
+  const rafRef = useRef<number | null>(null);
+  const navFreezeRef = useRef(false);
+  const navTimeoutRef = useRef<number | null>(null);
+  const [suppressTransition, setSuppressTransition] = useState(false);
+  const transTimeoutRef = useRef<number | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!headerRef.current) return;
@@ -45,47 +47,101 @@ function Header() {
   }, []);
 
   useEffect(() => {
-    let lastScroll = window.scrollY;
+    let lastScroll = window.scrollY || 0;
 
     const handleScroll = () => {
-      const current = window.scrollY;
-
-      // At very top
-      if (current <= 0) {
-        setIsSticky(false);
-        setIsPastHeader(false);
-        setHasOpened(false);
-        lastScroll = 0;
+      // Throttle with requestAnimationFrame
+      if (rafRef.current) return;
+      // If a navigation just happened, freeze scroll-driven animations
+      if (navFreezeRef.current) {
+        rafRef.current = null;
         return;
       }
+      rafRef.current = window.requestAnimationFrame(() => {
+        const current = window.scrollY || 0;
 
-      // If scrolling down past header → hide
-      if (current > lastScroll && current > height) {
-        setIsSticky(false);
-        setIsPastHeader(true);
-      }
+        // At the very top — always show header and suppress transition
+        if (current <= 0) {
+          // suppress animation when jumping to top
+          setSuppressTransition(true);
+          setIsHidden(false);
+          lastScroll = 0;
+          // clear any existing timeout
+          if (transTimeoutRef.current) {
+            clearTimeout(transTimeoutRef.current);
+            transTimeoutRef.current = null;
+          }
+          transTimeoutRef.current = window.setTimeout(() => {
+            setSuppressTransition(false);
+            transTimeoutRef.current = null;
+          }, 60);
+          rafRef.current = null;
+          return;
+        }
 
-      // If scrolling up → show
-      else if (current < lastScroll && current > height) {
-        setIsSticky(true);
-        setHasOpened(true);
-      }
+        // Scrolling down past header height -> hide
+        if (current > lastScroll && current > height) {
+          setIsHidden(true);
+        }
 
-      lastScroll = current;
+        // Scrolling up -> show
+        else if (current < lastScroll && lastScroll - current > 10) {
+          setIsHidden(false);
+        }
+
+        lastScroll = current;
+        rafRef.current = null;
+      });
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (transTimeoutRef.current) {
+        clearTimeout(transTimeoutRef.current);
+        transTimeoutRef.current = null;
+      }
+    };
   }, [height]);
+
+  // Keep header visible during client-side navigation and briefly after
+  useEffect(() => {
+    // Show header immediately when pathname changes
+    navFreezeRef.current = true;
+    setIsHidden(false);
+    setSuppressTransition(true);
+
+    // Clear any previous timeout
+    if (navTimeoutRef.current) {
+      clearTimeout(navTimeoutRef.current);
+      navTimeoutRef.current = null;
+    }
+
+    // Unfreeze after short delay and re-enable transitions
+    navTimeoutRef.current = window.setTimeout(() => {
+      navFreezeRef.current = false;
+      setSuppressTransition(false);
+      navTimeoutRef.current = null;
+    }, 400);
+
+    return () => {
+      if (navTimeoutRef.current) {
+        clearTimeout(navTimeoutRef.current);
+        navTimeoutRef.current = null;
+      }
+    };
+  }, [pathname]);
 
   return (
     <header
       ref={headerRef}
       className={twMerge(
-        "bg-white border-b border-b-grey relative transition-transform duration-300 top-0 z-50",
-        isPastHeader && "-translate-y-full",
-        isSticky && "translate-y-0",
-        hasOpened && "sticky"
+        "bg-white border-b border-b-grey sticky top-0 z-50",
+        suppressTransition
+          ? "transition-none"
+          : "transition-transform duration-300",
+        isHidden && "-translate-y-full"
       )}
     >
       <Container className="md:py-6 py-4">

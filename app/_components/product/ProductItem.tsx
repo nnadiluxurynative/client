@@ -2,6 +2,7 @@
 import { useState } from "react";
 import type { Product } from "@/app/_types/product";
 import { formatNaira } from "@/app/_utils/helpers";
+import Link from "next/link";
 
 export default function ProductItem({ product }: { product: Product }) {
   const [hoverIndex, setHoverIndex] = useState(0);
@@ -27,16 +28,19 @@ export default function ProductItem({ product }: { product: Product }) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="relative mb-3 overflow-hidden bg-slate-100">
+      <Link
+        href={`/shop/${product.slug}`}
+        className="relative mb-2.5 block overflow-hidden bg-slate-100"
+      >
         <img
           src={currentImage}
           alt={product.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-      </div>
+      </Link>
       <div>
-        <h3 className="text-lg font-medium">{product.title}</h3>
-        <p className="mt-1">
+        <h3 className="text-base font-medium">{product.title}</h3>
+        <p className="mt-1 text-sm sm:text-base">
           {displayPrice !== null ? formatNaira(Number(displayPrice)) : "—"}
         </p>
       </div>

@@ -4,15 +4,28 @@ import { GenericAPIResponse } from "../_types/api";
 import { handleErrorMessage } from "../_utils/helpers";
 import { Product, ProductsState } from "../_types/product";
 
+const CACHE_DURATION_MS = 15 * 60 * 1000; // 5 minutes
+
 export const useProductStore = create<ProductsState>((set, get) => ({
   products: [],
+  lastFetched: null,
   featuredProducts: [],
 
   fetchProducts: async () => {
+    const { lastFetched } = get();
+    const now = new Date();
+    if (
+      lastFetched &&
+      now.getTime() - lastFetched.getTime() < CACHE_DURATION_MS
+    ) {
+      // Return cached products if within cache duration
+      return get().products;
+    }
+
     try {
       const res = await API.get<GenericAPIResponse<Product[]>>(`/products`);
       const data = res.data.data ?? [];
-      set({ products: data });
+      set({ products: data, lastFetched: new Date() });
       return data;
     } catch (err: any) {
       const message = handleErrorMessage(err, "Failed to fetch products");

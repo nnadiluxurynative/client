@@ -21,6 +21,7 @@ export type Product = {
 export type ProductsState = {
   products: Product[];
   featuredProducts: Product[];
+  lastFetched: Date | null;
   getProduct: (idOrSlug: string) => Promise<Product | null>;
   getRelatedProducts: (idOrSlug: string) => Promise<Product[]>;
   getFeaturedProducts: () => Promise<Product[]>;

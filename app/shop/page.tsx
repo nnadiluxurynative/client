@@ -1,23 +1,36 @@
 "use client";
 import Container from "@/app/_components/Container";
+import Modal from "@/app/_components/modal/Modal";
+import { useModalContext } from "@/app/_components/modal/ModalContext";
+import NoProductsFilter from "@/app/_components/product/NoProductsFilter";
 import ProductItem from "@/app/_components/product/ProductItem";
 import type { Product } from "@/app/_types/product";
+import { Setting4 } from "iconsax-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BsChevronDown } from "react-icons/bs";
-import useMutate from "../_hooks/useMutate";
+import { BsChevronDown, BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import { twMerge } from "tailwind-merge";
+import Button from "../_components/Button";
+import Form from "../_components/Form";
+import Loader from "../_components/product/Loader";
 import useProductStore from "../_stores/productStore";
 
 function page() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
+  const [loading, setLoading] = useState<boolean>(true);
   const { fetchProducts, products } = useProductStore.getState();
 
-  const [fetch, loading, message] = useMutate(fetchProducts);
-
   useEffect(() => {
-    fetch({ data: null });
+    (async () => {
+      try {
+        // Fetch products
+        setLoading(true);
+        await fetchProducts();
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [fetchProducts]);
 
   // Read from URL on mount and when searchParams change
@@ -25,6 +38,7 @@ function page() {
   const urlPrice = searchParams.get("price") || "all";
   const [sortBy, setSortBy] = useState(urlSort);
   const [filterPrice, setFilterPrice] = useState(urlPrice);
+  // we'll use the shared Modal component for mobile filters
 
   // Keep state in sync with URL
   useEffect(() => {
@@ -34,7 +48,14 @@ function page() {
   const itemsPerPage = 12;
 
   // Get current page from URL, default to 1
-  const currentPage = parseInt(searchParams.get("page") || "1", 10);
+  const currentPageFromUrl = parseInt(searchParams.get("page") || "1", 10);
+  // Local page state to render immediately on user interaction (avoids lag while router.push updates URL)
+  const [page, setPage] = useState<number>(currentPageFromUrl);
+
+  // Keep local page in sync with URL (handles back/forward navigation)
+  useEffect(() => {
+    if (currentPageFromUrl !== page) setPage(currentPageFromUrl);
+  }, [currentPageFromUrl]);
 
   // Filter and sort products (adapted to shared `Product` type)
   const getFilteredAndSortedProducts = () => {
@@ -96,7 +117,7 @@ function page() {
 
   // Pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
+  const startIndex = (page - 1) * itemsPerPage;
   const paginatedProducts = filteredProducts.slice(
     startIndex,
     startIndex + itemsPerPage
@@ -110,132 +131,286 @@ function page() {
     params.set("sort", sort);
     params.set("price", price);
     params.set("page", "1");
+    // update local page state immediately for instant UI response
+    setPage(1);
     router.push(`/shop?${params.toString()}`);
   };
 
+  // Mobile filters content rendered inside Modal.Window. Uses modal context to close after applying.
+  function MobileFiltersContent() {
+    const { close } = useModalContext();
+    const [localPrice, setLocalPrice] = useState<string>(filterPrice);
+    const [localSort, setLocalSort] = useState<string>(sortBy);
+
+    return (
+      <Form>
+        <div>
+          <label className="text-sm font-medium mb-1 inline-block">
+            Filter
+          </label>
+          <div className="relative">
+            <select
+              value={localPrice}
+              onChange={(e) => setLocalPrice(e.target.value)}
+              className="appearance-none w-full px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+              aria-label="Filter by price"
+            >
+              <option value="all">All Prices</option>
+              <option value="under-200">Under ₦200K</option>
+              <option value="200-300">₦200K - ₦300K</option>
+              <option value="over-300">Over ₦300K</option>
+            </select>
+            <BsChevronDown
+              size={16}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="text-sm font-medium mb-1 inline-block">Sort</label>
+          <div className="relative">
+            <select
+              value={localSort}
+              onChange={(e) => setLocalSort(e.target.value)}
+              className="appearance-none px-3 w-full pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+              aria-label="Sort products"
+            >
+              <option value="newest">Newest</option>
+              <option value="featured">Featured</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="a-z">A-Z</option>
+              <option value="z-a">Z-A</option>
+            </select>
+            <BsChevronDown
+              size={16}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+        <div className="mt-1">
+          <Button
+            size="sm"
+            type="button"
+            onClick={() => {
+              handleFilterChange(localSort, localPrice);
+              close();
+            }}
+          >
+            Apply
+          </Button>
+        </div>
+      </Form>
+    );
+  }
+
   return (
-    <div className="py-12">
-      {/* Filters and Sort */}
-      <div>
-        <Container>
-          <Container.Row className="flex-col gap-y-0">
-            <Container.Row.Column className="mb-8">
-              <h1 className="text-3xl w-full text-center sm:text-4xl font-medium">
-                Shop
-              </h1>
-            </Container.Row.Column>
-            <Container.Row.Column className="">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                <div className="flex gap-3 items-center">
-                  <span className="font-medium">Filter:</span>
-                  <div className="relative">
-                    <select
-                      value={filterPrice}
-                      onChange={(e) =>
-                        handleFilterChange(sortBy, e.target.value)
-                      }
-                      className="appearance-none px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
-                    >
-                      <option value="all">All Prices</option>
-                      <option value="under-200">Under ₦200K</option>
-                      <option value="200-300">₦200K - ₦300K</option>
-                      <option value="over-300">Over ₦300K</option>
-                    </select>
-                    <BsChevronDown
-                      size={16}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center gap-8">
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium">Sort By:</span>
-                    <div className="relative">
-                      <select
-                        value={sortBy}
-                        onChange={(e) =>
-                          handleFilterChange(e.target.value, filterPrice)
-                        }
-                        className="appearance-none px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
-                      >
-                        <option value="newest">Newest</option>
-                        <option value="featured">Featured</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="a-z">A-Z</option>
-                        <option value="z-a">Z-A</option>
-                      </select>
-                      <BsChevronDown
-                        size={16}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-                      />
+    <Modal>
+      <div className="py-12">
+        {/* Filters and Sort */}
+        <div>
+          <Container>
+            <Container.Row className="flex-col gap-y-0">
+              <Container.Row.Column className="mb-8">
+                <h1 className="text-3xl w-full text-center sm:text-4xl font-medium">
+                  Shop
+                </h1>
+              </Container.Row.Column>
+              <Container.Row.Column>
+                <div className="w-full">
+                  {/* Desktop: inline filters */}
+                  <div className="hidden sm:flex justify-between flex-wrap items-center gap-4">
+                    <div className="flex gap-3 items-center">
+                      <span className="font-medium">Filter:</span>
+                      <div className="relative">
+                        <select
+                          value={filterPrice}
+                          onChange={(e) =>
+                            handleFilterChange(sortBy, e.target.value)
+                          }
+                          className="appearance-none px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+                          aria-label="Filter by price"
+                        >
+                          <option value="all">All Prices</option>
+                          <option value="under-200">Under ₦200K</option>
+                          <option value="200-300">₦200K - ₦300K</option>
+                          <option value="over-300">Over ₦300K</option>
+                        </select>
+                        <BsChevronDown
+                          size={16}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-8">
+                      <div className="flex items-center gap-3">
+                        <span className="font-medium">Sort By:</span>
+                        <div className="relative">
+                          <select
+                            value={sortBy}
+                            onChange={(e) =>
+                              handleFilterChange(e.target.value, filterPrice)
+                            }
+                            className="appearance-none px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+                            aria-label="Sort products"
+                          >
+                            <option value="newest">Newest</option>
+                            <option value="featured">Featured</option>
+                            <option value="price-low">
+                              Price: Low to High
+                            </option>
+                            <option value="price-high">
+                              Price: High to Low
+                            </option>
+                            <option value="a-z">A-Z</option>
+                            <option value="z-a">Z-A</option>
+                          </select>
+                          <BsChevronDown
+                            size={16}
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                          />
+                        </div>
+                      </div>
+                      <span>
+                        <p className="text-sm">
+                          {filteredProducts.length} products
+                        </p>
+                      </span>
                     </div>
                   </div>
-                  <span>
-                    <p className="text-sm">
-                      {filteredProducts.length} products
-                    </p>
-                  </span>
+
+                  {/* Mobile: filter button uses Modal.Open */}
+                  <div className="sm:hidden flex items-center justify-between">
+                    <Modal.Open opens="shop-filters">
+                      <button
+                        className="cursor-pointer hover:underline flex items-center gap-2"
+                        aria-controls="mobile-filters"
+                      >
+                        <Setting4 size={16} variant="Outline" color="#121212" />
+
+                        <span className="">Filter and sort</span>
+                      </button>
+                    </Modal.Open>
+                    <div>
+                      <p className="text-sm">
+                        {filteredProducts.length} products
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Mobile filters rendered via shared Modal.Window */}
+                  <Modal.Window name="shop-filters" title={"Filter and sort"}>
+                    <MobileFiltersContent />
+                  </Modal.Window>
                 </div>
-              </div>
+              </Container.Row.Column>
+            </Container.Row>
+          </Container>
+        </div>
+
+        {/* Products Grid */}
+        <Container>
+          <Container.Row className="pb-12 py-6 sm:py-10">
+            <Container.Row.Column>
+              {loading ? (
+                <Loader count={itemsPerPage} />
+              ) : paginatedProducts.length === 0 ? (
+                <NoProductsFilter onReset={() => router.push(`/shop`)} />
+              ) : (
+                <div className="grid grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-3 gap-6 gap-y-8">
+                  {paginatedProducts.map((product) => (
+                    <ProductItem key={product._id} product={product} />
+                  ))}
+                </div>
+              )}
             </Container.Row.Column>
+
+            {/* Pagination - show only when not loading and more than 1 page */}
+            {!loading && totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-6 w-full">
+                {page > 1 && (
+                  <button
+                    onClick={() => {
+                      const prev = Math.max(1, page - 1);
+                      const params = new URLSearchParams(
+                        searchParams.toString()
+                      );
+                      params.set("page", String(prev));
+                      // update local page immediately for snappy UI
+                      setPage(prev);
+                      router.push(`/shop?${params.toString()}`);
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "auto" as ScrollBehavior,
+                      });
+                    }}
+                    className="w-11 h-11 flex items-center justify-center cursor-pointer button"
+                    aria-label="Previous page"
+                  >
+                    <BsChevronLeft size={16} />
+                  </button>
+                )}
+
+                <div className="flex items-center gap-3">
+                  {Array.from({ length: totalPages }).map((_, idx) => {
+                    const pNum = idx + 1;
+                    return (
+                      <button
+                        key={pNum}
+                        onClick={() => {
+                          const params = new URLSearchParams(
+                            searchParams.toString()
+                          );
+                          params.set("page", String(pNum));
+                          // update local page immediately for snappy UI
+                          setPage(pNum);
+                          router.push(`/shop?${params.toString()}`);
+                          window.scrollTo({
+                            top: 0,
+                            behavior: "auto" as ScrollBehavior,
+                          });
+                        }}
+                        className={twMerge(
+                          `w-11 h-11 flex items-center justify-center cursor-pointer hover:[&>span]:border-[#121212]`,
+                          pNum === page && "[&>span]:border-[#121212]"
+                        )}
+                      >
+                        <span className="px-2 py-1 text-sm font-medium inline-block border-b border-transparent">
+                          {pNum}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {page < totalPages && (
+                  <button
+                    onClick={() => {
+                      const next = Math.min(totalPages, page + 1);
+                      const params = new URLSearchParams(
+                        searchParams.toString()
+                      );
+                      params.set("page", String(next));
+                      // update local page immediately for snappy UI
+                      setPage(next);
+                      router.push(`/shop?${params.toString()}`);
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "auto" as ScrollBehavior,
+                      });
+                    }}
+                    className="w-11 h-11 flex items-center justify-center cursor-pointer button"
+                    aria-label="Next page"
+                  >
+                    <BsChevronRight size={16} />
+                  </button>
+                )}
+              </div>
+            )}
           </Container.Row>
         </Container>
       </div>
-
-      {/* Products Grid */}
-      <Container>
-        <Container.Row className="pb-12 py-10 gap-10">
-          <Container.Row.Column className="">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {paginatedProducts.map((product) => (
-                <ProductItem key={product._id} product={product} />
-              ))}
-            </div>
-          </Container.Row.Column>
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 mt-12">
-              <button
-                onClick={() =>
-                  router.push(`/shop?page=${Math.max(1, currentPage - 1)}`)
-                }
-                disabled={currentPage === 1}
-                className="px-4 py-2 border border-slate-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors"
-              >
-                Previous
-              </button>
-
-              {[...Array(totalPages)].map((_, idx) => (
-                <button
-                  key={idx + 1}
-                  onClick={() => router.push(`/shop?page=${idx + 1}`)}
-                  className={`px-3 py-2 rounded-lg transition-colors ${
-                    currentPage === idx + 1
-                      ? "bg-slate-900 text-white"
-                      : "border border-slate-300 hover:bg-slate-100"
-                  }`}
-                >
-                  {idx + 1}
-                </button>
-              ))}
-
-              <button
-                onClick={() =>
-                  router.push(
-                    `/shop?page=${Math.min(totalPages, currentPage + 1)}`
-                  )
-                }
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 border border-slate-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-100 transition-colors"
-              >
-                Next
-              </button>
-            </div>
-          )}
-        </Container.Row>
-      </Container>
-    </div>
+    </Modal>
   );
 }
 

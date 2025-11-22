@@ -110,11 +110,15 @@ function page() {
                   {page > 1 && (
                     <button
                       onClick={() => {
-                        setPage((p) => Math.max(1, p - 1));
+                        const prev = Math.max(1, page - 1);
+                        setPage(prev);
                         // Scroll to top of addresses list
-                        window.scrollTo({ top: 0, behavior: "instant" });
+                        window.scrollTo({
+                          top: 0,
+                          behavior: "auto" as ScrollBehavior,
+                        });
                       }}
-                      className="px-2 py-1 cursor-pointer button"
+                      className="w-11 h-11 flex items-center justify-center cursor-pointer button"
                       aria-label="Previous page"
                     >
                       <BsChevronLeft size={16} />
@@ -130,14 +134,19 @@ function page() {
                           onClick={() => {
                             setPage(pNum);
                             // Scroll to top of addresses list
-                            window.scrollTo({ top: 0, behavior: "instant" });
+                            window.scrollTo({
+                              top: 0,
+                              behavior: "auto" as ScrollBehavior,
+                            });
                           }}
                           className={twMerge(
-                            `px-1 cursor-pointer border-transparent hover:border-[#121212] border-b`,
-                            pNum === page && "border-[#121212]"
+                            `w-11 h-11 flex items-center justify-center cursor-pointer hover:[&>span]:border-[#121212]`,
+                            pNum === page && "[&>span]:border-[#121212]"
                           )}
                         >
-                          {pNum}
+                          <span className="px-2 py-1 text-sm font-medium inline-block border-b border-transparent">
+                            {pNum}
+                          </span>
                         </button>
                       );
                     })}
@@ -145,11 +154,15 @@ function page() {
                   {page < totalPages && (
                     <button
                       onClick={() => {
-                        setPage((p) => Math.min(totalPages, p + 1));
+                        const next = Math.min(totalPages, page + 1);
+                        setPage(next);
                         // Scroll to top of addresses list
-                        window.scrollTo({ top: 0, behavior: "instant" });
+                        window.scrollTo({
+                          top: 0,
+                          behavior: "auto" as ScrollBehavior,
+                        });
                       }}
-                      className="px-2 py-1 cursor-pointer button"
+                      className="w-11 h-11 flex items-center justify-center cursor-pointer button"
                       aria-label="Next page"
                     >
                       <BsChevronRight size={16} />
