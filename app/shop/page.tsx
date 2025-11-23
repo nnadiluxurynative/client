@@ -317,7 +317,7 @@ function page() {
               ) : paginatedProducts.length === 0 ? (
                 <NoProductsFilter onReset={() => router.push(`/shop`)} />
               ) : (
-                <div className="grid grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-3 gap-6 gap-y-8">
+                <div className="grid grid-cols-1 min-[500px]:grid-cols-2 lg:grid-cols-3 gap-6 gap-y-8">
                   {paginatedProducts.map((product) => (
                     <ProductItem key={product._id} product={product} />
                   ))}

@@ -239,7 +239,7 @@ function AddMeasurementModal() {
               ]}
             />
           </Form.InputGroup>
-          <div className="flex flex-col-reverse items-center sm:flex-row gap-3 mt-1">
+          <div className="flex items-center gap-3 mt-1">
             <Cancel />
             <div className="flex flex-1 gap-3 justify-end">
               <Button
