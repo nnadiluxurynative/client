@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
-import Button from "../_components/Button";
-import Container from "../_components/Container";
-import Form from "../_components/Form";
-import useMutate from "../_hooks/useMutate";
-import Spinner from "../_components/Spinner";
-import { useAuthStore } from "../_stores/authStore";
-import { SignupInput } from "../_schemas/auth";
+import Button from "@/app/_components/Button";
+import Container from "@/app/_components/Container";
+import Form from "@/app/_components/Form";
+import useMutate from "@/app/_hooks/useMutate";
+import Spinner from "@/app/_components/Spinner";
+import { useAuthStore } from "@/app/_stores/authStore";
+import { SignupInput } from "@/app/_schemas/auth";
 import { useRouter } from "next/navigation";
 
 function Signup() {

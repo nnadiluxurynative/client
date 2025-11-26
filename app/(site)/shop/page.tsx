@@ -10,10 +10,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsChevronDown, BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
-import Button from "../_components/Button";
-import Form from "../_components/Form";
-import Loader from "../_components/product/Loader";
-import useProductStore from "../_stores/productStore";
+import Button from "@/app/_components/Button";
+import Form from "@/app/_components/Form";
+import Loader from "@/app/_components/product/Loader";
+import useProductStore from "@/app/_stores/productStore";
 
 function page() {
   const router = useRouter();

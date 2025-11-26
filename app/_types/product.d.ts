@@ -8,6 +8,7 @@ export type Product = {
     name: string;
     price: number;
   }[];
+  features?: string[];
   images: {
     url: string;
     public_id: string;

@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
-import Button from "../_components/Button";
-import Container from "../_components/Container";
-import Form from "../_components/Form";
-import Spinner from "../_components/Spinner";
-import useMutate from "../_hooks/useMutate";
-import { LoginInput } from "../_schemas/auth";
+import Button from "@/app/_components/Button";
+import Container from "@/app/_components/Container";
+import Form from "@/app/_components/Form";
+import Spinner from "@/app/_components/Spinner";
+import useMutate from "@/app/_hooks/useMutate";
+import { LoginInput } from "@/app/_schemas/auth";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "../_stores/authStore";
+import { useAuthStore } from "@/app/_stores/authStore";
 
 export default function Login() {
   const { loginUser } = useAuthStore();

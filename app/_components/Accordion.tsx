@@ -1,22 +1,27 @@
 "use client";
-import { useState, useRef, useLayoutEffect, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useLayoutEffect,
+  useEffect,
+  createContext,
+} from "react";
 import { BsDash, BsPlus } from "react-icons/bs";
 
 interface AccordionProps {
-  items: { question: string; answer: string }[];
+  className?: string;
+  children: React.ReactNode;
 }
 
 function AccordionItem({
   item,
-  isOpen,
   idx,
-  onToggle,
 }: {
-  item: { question: string; answer: string };
-  isOpen: boolean;
+  item: { question: string; answer: React.ReactNode };
   idx: number;
-  onToggle: (i: number) => void;
 }) {
+  const { openIndex, toggle } = useAccordionContext();
+  const isOpen = openIndex === idx;
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [height, setHeight] = useState(0);
 
@@ -37,10 +42,13 @@ function AccordionItem({
   }, []);
 
   return (
-    <div className="border-b border-grey">
+    <div
+      className="border-b border-grey"
+      style={{ transition: "all 320ms cubic-bezier(0.4,0,0.2,1)" }}
+    >
       <button
-        className="w-full text-left py-4 cursor-pointer font-medium text-lg flex justify-between items-center focus:outline-none"
-        onClick={() => onToggle(idx)}
+        className="w-full text-left py-4 cursor-pointer font-medium text-base flex justify-between items-center focus:outline-none"
+        onClick={() => toggle(idx)}
         aria-expanded={isOpen}
         aria-controls={`faq-panel-${idx}`}
       >
@@ -63,7 +71,7 @@ function AccordionItem({
         }}
         className="text-muted-foreground"
       >
-        <div ref={contentRef} className="pb-4">
+        <div ref={contentRef} className="pb-4 text-sm">
           {item.answer}
         </div>
       </div>
@@ -71,7 +79,23 @@ function AccordionItem({
   );
 }
 
-export default function Accordion({ items }: AccordionProps) {
+const AccordionContext = createContext(
+  {} as {
+    openIndex: number | null;
+    toggle: (idx: number) => void;
+  }
+);
+
+export const useAccordionContext = () => {
+  if (!AccordionContext) {
+    throw new Error(
+      "useAccordionContext must be used within an AccordionProvider"
+    );
+  }
+  return React.useContext(AccordionContext);
+};
+
+function Accordion({ children, className }: AccordionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggle = (idx: number) => {
@@ -79,16 +103,12 @@ export default function Accordion({ items }: AccordionProps) {
   };
 
   return (
-    <div className="">
-      {items.map((item, idx) => (
-        <AccordionItem
-          key={idx}
-          item={item}
-          idx={idx}
-          isOpen={openIndex === idx}
-          onToggle={toggle}
-        />
-      ))}
-    </div>
+    <AccordionContext.Provider value={{ openIndex, toggle }}>
+      <div className={className}>{children}</div>
+    </AccordionContext.Provider>
   );
 }
+
+Accordion.Item = AccordionItem;
+
+export default Accordion;

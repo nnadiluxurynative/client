@@ -1,4 +1,4 @@
-import Container from "../_components/Container";
+import Container from "@/app/_components/Container";
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (

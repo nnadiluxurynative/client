@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
+import AppInitializer from "@/app/_components/AppInitializer";
+import HydrationGate from "@/app/_components/HydrationGate";
+import ScrollTop from "@/app/_components/ScrollTop";
 import localFont from "next/font/local";
-import AppInitializer from "./_components/AppInitializer";
-import Footer from "./_components/Footer";
-import Header from "./_components/Header";
-import HydrationGate from "./_components/HydrationGate";
-import ScrollTop from "./_components/ScrollTop";
-import "./_styles/globals.css";
+import "@/app/_styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Nnadi Luxury native - The Luxury Native",
@@ -32,26 +30,20 @@ const satoshi = localFont({
   variable: "--font-satoshi",
 });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body
         className={`flex flex-col min-h-screen bg-white ${satoshi.variable} ${satoshi.className}`}
       >
-        <div className="flex-1">
-          <HydrationGate>
-            <ScrollTop />
-            <AppInitializer />
-            <Header />
-            {children}
-          </HydrationGate>
-        </div>
-        <Footer />
+        <HydrationGate>
+          <ScrollTop />
+          <AppInitializer />
+          {children}
+        </HydrationGate>
       </body>
     </html>
   );
 }
+
+export default RootLayout;

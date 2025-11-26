@@ -3,13 +3,15 @@ import { Bag2, SearchNormal1, User } from "iconsax-react";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "../_stores/authStore";
+import { twMerge } from "tailwind-merge";
+import { useCartStore } from "../_stores/cartStore";
+import SearchBar from "./SearchBar";
 import Link from "next/link";
 import Container from "./Container";
 import MobileNavigation from "./MobileNavigation";
 import Navigation from "./Navigation";
-import SearchBar from "./SearchBar";
 import Logo from "./Logo";
-import { twMerge } from "tailwind-merge";
+import CartSidebar from "./cart/CartSidebar";
 
 function Header() {
   // Header height
@@ -22,6 +24,10 @@ function Header() {
 
   // Header ref
   const headerRef = useRef<HTMLElement>(null);
+
+  const { getCartCount, toggleCart, isOpen } = useCartStore();
+
+  const cartCount = getCartCount();
 
   // Header is currently visible/sticky
   // Whether header is hidden (scrolled down) or visible
@@ -174,13 +180,21 @@ function Header() {
               >
                 <User color="#121212" size={24} variant="Outline" />
               </Link>
-              <button className="relative flex pr-2">
-                <Link href="/cart" className="inline-block button">
-                  <Bag2 color="#121212" size={24} variant="Outline" />
-                </Link>
-                <span className="absolute size-[18px] pointer-events-none right-0 -bottom-2 bg-foreground rounded-full text-background flex items-center justify-center font-medium text-[11px]">
-                  4
-                </span>
+              <button
+                className="relative flex pr-2 cursor-pointer hover:[&>svg]:scale-110"
+                onClick={() => {
+                  // Check if on cart page
+                  if (pathname === "/cart") return;
+                  toggleCart();
+                }}
+              >
+                <Bag2 color="#121212" size={24} variant="Outline" />
+
+                {cartCount > 0 && (
+                  <span className="absolute size-[18px] pointer-events-none right-0 -bottom-2 bg-foreground rounded-full text-background flex items-center justify-center font-medium text-[11px]">
+                    {cartCount}
+                  </span>
+                )}
               </button>
             </div>
           </Container.Row.Column>
@@ -195,6 +209,8 @@ function Header() {
       </Container>
       {/* Search Bar */}
       <SearchBar headerHeight={height} open={open} setOpen={setOpen} />
+      {/* Cart Sidebar */}
+      <CartSidebar />
     </header>
   );
 }

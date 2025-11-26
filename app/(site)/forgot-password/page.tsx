@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
-import Container from "../_components/Container";
-import Form from "../_components/Form";
-import Button from "../_components/Button";
-import useMutate from "../_hooks/useMutate";
-import Spinner from "../_components/Spinner";
-import { useAuthStore } from "../_stores/authStore";
-import { ForgotPasswordInput } from "../_schemas/auth";
+import Container from "@/app/_components/Container";
+import Form from "@/app/_components/Form";
+import Button from "@/app/_components/Button";
+import useMutate from "@/app/_hooks/useMutate";
+import Spinner from "@/app/_components/Spinner";
+import { useAuthStore } from "@/app/_stores/authStore";
+import { ForgotPasswordInput } from "@/app/_schemas/auth";
 
 export default function ForgotPassword() {
   const { forgotPassword } = useAuthStore();

@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
-import Button from "../_components/Button";
-import Container from "../_components/Container";
-import OrderHistory from "../_components/OrderHistory";
-import useMutate from "../_hooks/useMutate";
+import Button from "@/app/_components/Button";
+import Container from "@/app/_components/Container";
+import OrderHistory from "@/app/_components/OrderHistory";
+import useMutate from "@/app/_hooks/useMutate";
 import { Logout } from "iconsax-react";
-import { useAuthStore } from "../_stores/authStore";
+import { useAuthStore } from "@/app/_stores/authStore";
 
 export default function Account() {
   const { logoutUser, user } = useAuthStore();

@@ -1,7 +1,7 @@
 "use client";
-import Container from "../../_components/Container";
-import Form from "../../_components/Form";
-import Button from "../../_components/Button";
+import Container from "@/app/_components/Container";
+import Form from "@/app/_components/Form";
+import Button from "@/app/_components/Button";
 import useMutate from "@/app/_hooks/useMutate";
 import Spinner from "@/app/_components/Spinner";
 import { useAuthStore } from "@/app/_stores/authStore";

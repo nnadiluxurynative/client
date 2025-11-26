@@ -1,3 +1,4 @@
+"use client";
 import Accordion from "@/app/_components/Accordion";
 import Container from "@/app/_components/Container";
 import Link from "next/link";
@@ -41,7 +42,11 @@ export default function FAQsPage() {
       <h1 className="text-3xl text-center sm:text-4xl font-medium mb-8">
         Frequently Asked Questions
       </h1>
-      <Accordion items={faqs} />
+      <Accordion>
+        {faqs.map((item, idx) => (
+          <Accordion.Item key={idx} item={item} idx={idx} />
+        ))}
+      </Accordion>
       <div className="mt-10 gap-4 text-center flex items-center justify-center">
         <Link href="/" className="link--underline">
           Back to homepage
