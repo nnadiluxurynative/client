@@ -311,7 +311,7 @@ export default function page() {
                   {product?.title}
                 </h1>
                 <div className="mb-4">
-                  <span className="text-xl text-[#3b3b3b]">
+                  <span className="text-xl">
                     {displayPrice !== null
                       ? formatNaira(Number(displayPrice))
                       : "—"}
@@ -449,9 +449,7 @@ export default function page() {
                             {product?.features &&
                               product.features.length > 0 && (
                                 <>
-                                  <h3 className="font-medium mb-0.5">
-                                    Features
-                                  </h3>
+                                  <h3 className="font-medium mb-1">Features</h3>
                                   <ul className="list-disc space-y-1 marker:text-[#121212]">
                                     {product.features.map((feat, i) => (
                                       <li key={i}>{feat}</li>
@@ -470,7 +468,7 @@ export default function page() {
                         answer: (
                           <div>
                             <div className="mb-3">
-                              <h3 className="font-medium mb-0.5">Size Help</h3>
+                              <h3 className="font-medium mb-1">Size Help</h3>
                               <p>
                                 Still unsure what size to get? Check out our{" "}
                                 <Modal>
@@ -484,9 +482,7 @@ export default function page() {
                               </p>
                             </div>
                             <div className="mb-3">
-                              <h3 className="font-medium mb-0.5">
-                                Fit Options
-                              </h3>
+                              <h3 className="font-medium mb-1">Fit Options</h3>
                               <ul className="list-disc pl-5 space-y-1 marker:text-[#121212]">
                                 <li>
                                   <span className="font-medium">Slim:</span>{" "}
@@ -513,7 +509,7 @@ export default function page() {
                         answer: (
                           <div>
                             <div className="mb-3">
-                              <h3 className="font-medium mb-0.5">
+                              <h3 className="font-medium mb-1">
                                 Production time
                               </h3>
                               <p>
@@ -522,7 +518,7 @@ export default function page() {
                               </p>
                             </div>
                             <div className="mb-3">
-                              <h3 className="font-medium mb-0.5">Shipping</h3>
+                              <h3 className="font-medium mb-1">Shipping</h3>
                               <ul className="list-disc pl-5 space-y-1 marker:text-[#121212]">
                                 <li>Free shipping within Nigeria</li>
                                 <li>
@@ -531,7 +527,7 @@ export default function page() {
                               </ul>
                             </div>
                             <div className="mb-3">
-                              <h3 className="font-medium mb-0.5">Returns</h3>
+                              <h3 className="font-medium mb-1">Returns</h3>
                               <p>
                                 Due to the custom nature of our garments, we
                                 cannot accept returns. However, we offer

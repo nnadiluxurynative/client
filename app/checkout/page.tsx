@@ -1,12 +1,14 @@
 "use client";
-import { useCartStore } from "@/app/_stores/cartStore";
+import Button from "@/app/_components/Button";
 import { useAuthStore } from "@/app/_stores/authStore";
+import { useCartStore } from "@/app/_stores/cartStore";
 import { formatNaira } from "@/app/_utils/helpers";
 import Link from "next/link";
-import Button from "@/app/_components/Button";
-import Container from "@/app/_components/Container";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { BsChevronLeft, BsWhatsapp } from "react-icons/bs";
+import Modal from "@/app/_components/modal/Modal";
+import AddAddressModal from "@/app/_components/address/AddAddressModal";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -27,25 +29,10 @@ export default function CheckoutPage() {
     phone: "",
   });
 
-  if (items.length === 0) {
-    return (
-      <div className="py-12">
-        <Container>
-          <div className="max-w-4xl mx-auto text-center py-12">
-            <h1 className="text-3xl font-medium mb-4">Your cart is empty</h1>
-            <p className="text-gray-600 mb-6">
-              Add items to your cart before checking out.
-            </p>
-            <Link href="/shop">
-              <Button size="lg" color="white">
-                Continue Shopping
-              </Button>
-            </Link>
-          </div>
-        </Container>
-      </div>
-    );
-  }
+  useEffect(() => {
+    // Reset selected address to latest address created when user changes
+    setSelectedAddress(user?.addresses?.at(0)?._id || null);
+  }, [user]);
 
   const handlePlaceOrder = async () => {
     // Validation for logged-in users
@@ -97,286 +84,283 @@ export default function CheckoutPage() {
   const total = subtotal + shipping;
 
   return (
-    <div className="py-12">
-      <Container>
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-medium mb-8">Checkout</h1>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column: Delivery & Payment */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Delivery Address */}
-              <div className="border border-grey p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-medium">Delivery Address</h2>
-                  {user && (
-                    <Link
-                      href="/account/addresses"
-                      className="text-sm link--underline"
-                    >
-                      Manage Addresses
-                    </Link>
-                  )}
+    <React.Fragment>
+      {/* Left Column: Form */}
+      <div className="py-8 lg:py-12">
+        <div className="px-4 max-w-[554px]  lg:max-w-[522px] lg:px-8 mx-auto lg:ml-auto lg:mr-0">
+          {/* Contact Info */}
+          {user ? (
+            <div className="mb-8">
+              <div className="w-full  pb-3 h-11 border-b border-b-grey flex items-center justify-between">
+                <div className="flex items-center gap-2 ">
+                  <div className="w-8 h-8 rounded-full bg-gray-100 text-[#121212] flex items-center justify-center text-sm ">
+                    {user.firstName?.[0]?.toUpperCase() ||
+                      user.email?.[0]?.toUpperCase()}
+                    {user.lastName?.[0]?.toUpperCase() ||
+                      user.email?.[1]?.toUpperCase()}
+                  </div>
+                  <span className="text-sm">{user.email}</span>
                 </div>
 
-                {user && user.addresses && user.addresses.length > 0 ? (
-                  <div className="space-y-3">
-                    {user.addresses.map((address) => (
-                      <label
-                        key={address._id}
-                        className={`flex items-start gap-3 p-4 border cursor-pointer transition ${
-                          selectedAddress === address._id
-                            ? "border-[#121212] bg-gray-50"
-                            : "border-grey hover:border-gray-400"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="address"
-                          checked={selectedAddress === address._id}
-                          onChange={() => setSelectedAddress(address._id!)}
-                          className="mt-1 accent-[#121212]"
-                        />
-                        <div className="flex-1">
-                          <p className="font-medium">
-                            {address.firstName} {address.lastName}
-                          </p>
-                          <p className="text-sm text-gray-600 mt-1">
-                            {address.address}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {address.city}, {address.state}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {address.phone}
-                          </p>
-                          {address.isDefault && (
-                            <span className="inline-block mt-2 text-xs bg-gray-200 px-2 py-1 rounded">
-                              Default
-                            </span>
-                          )}
-                        </div>
-                      </label>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {user && (
-                      <div className="text-center py-4 mb-4">
-                        <p className="text-gray-600 mb-3">
-                          No saved addresses found.
-                        </p>
-                        <Link href="/account/addresses">
-                          <Button size="md" color="white">
-                            Add Address
-                          </Button>
-                        </Link>
-                      </div>
-                    )}
-
-                    {!user && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium mb-1">
-                            First Name *
-                          </label>
-                          <input
-                            type="text"
-                            value={guestInfo.firstName}
-                            onChange={(e) =>
-                              setGuestInfo({
-                                ...guestInfo,
-                                firstName: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 border border-grey focus:outline-none focus:border-[#121212]"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium mb-1">
-                            Last Name *
-                          </label>
-                          <input
-                            type="text"
-                            value={guestInfo.lastName}
-                            onChange={(e) =>
-                              setGuestInfo({
-                                ...guestInfo,
-                                lastName: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 border border-grey focus:outline-none focus:border-[#121212]"
-                          />
-                        </div>
-                        <div className="sm:col-span-2">
-                          <label className="block text-sm font-medium mb-1">
-                            Address *
-                          </label>
-                          <input
-                            type="text"
-                            value={guestInfo.address}
-                            onChange={(e) =>
-                              setGuestInfo({
-                                ...guestInfo,
-                                address: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 border border-grey focus:outline-none focus:border-[#121212]"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium mb-1">
-                            City *
-                          </label>
-                          <input
-                            type="text"
-                            value={guestInfo.city}
-                            onChange={(e) =>
-                              setGuestInfo({
-                                ...guestInfo,
-                                city: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 border border-grey focus:outline-none focus:border-[#121212]"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium mb-1">
-                            State *
-                          </label>
-                          <input
-                            type="text"
-                            value={guestInfo.state}
-                            onChange={(e) =>
-                              setGuestInfo({
-                                ...guestInfo,
-                                state: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 border border-grey focus:outline-none focus:border-[#121212]"
-                          />
-                        </div>
-                        <div className="sm:col-span-2">
-                          <label className="block text-sm font-medium mb-1">
-                            Phone Number *
-                          </label>
-                          <input
-                            type="tel"
-                            value={guestInfo.phone}
-                            onChange={(e) =>
-                              setGuestInfo({
-                                ...guestInfo,
-                                phone: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 border border-grey focus:outline-none focus:border-[#121212]"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Payment Method */}
-              <div className="border border-grey p-6">
-                <h2 className="text-xl font-medium mb-4">Payment Method</h2>
-                <div className="space-y-3">
-                  <label className="flex items-center gap-3 p-4 border border-[#121212] bg-gray-50 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="payment"
-                      defaultChecked
-                      className="accent-[#121212]"
-                    />
-                    <div>
-                      <p className="font-medium">Pay on Delivery</p>
-                      <p className="text-sm text-gray-600">
-                        Cash or card payment upon delivery
-                      </p>
-                    </div>
-                  </label>
-                </div>
+                <button
+                  onClick={() => {
+                    useAuthStore.getState().logoutUser();
+                  }}
+                  className="cursor-pointer  py-2 text-center text-[#453121] text-sm hover:underline"
+                >
+                  Sign out
+                </button>
               </div>
             </div>
-
-            {/* Right Column: Order Summary */}
-            <div className="lg:col-span-1">
-              <div className="border border-grey p-6 sticky top-24">
-                <h2 className="text-xl font-medium mb-4">Order Summary</h2>
-
-                {/* Order Items */}
-                <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
-                  {items.map((item) => (
-                    <div
-                      key={`${item.product._id}-${item.color}-${item.material}-${item.size}`}
-                      className="flex gap-3 text-sm"
-                    >
-                      {item.image && (
-                        <div
-                          className="w-16 h-20 bg-gray-100 shrink-0"
-                          style={{
-                            backgroundImage: `url(${item.image})`,
-                            backgroundSize: "cover",
-                            backgroundPosition: "top center",
-                          }}
-                        />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{item.title}</p>
-                        <p className="text-xs text-gray-600">
-                          {item.color} / {item.material} / {item.size}
-                        </p>
-                        <p className="text-xs text-gray-600">
-                          Qty: {item.quantity}
-                        </p>
-                        <p className="text-sm font-medium mt-1">
-                          {formatNaira(item.price * item.quantity)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="border-t border-grey pt-4 space-y-3 mb-4">
-                  <div className="flex justify-between text-sm">
-                    <span>Subtotal</span>
-                    <span>{formatNaira(subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Shipping</span>
-                    <span>
-                      {shipping === 0 ? "Free" : formatNaira(shipping)}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="border-t border-grey pt-4 mb-6">
-                  <div className="flex justify-between text-lg font-medium">
-                    <span>Total</span>
-                    <span>{formatNaira(total)}</span>
-                  </div>
-                </div>
-
-                <Button
-                  size="lg"
-                  className="w-full"
-                  onClick={handlePlaceOrder}
-                  disabled={isProcessing || (!!user && !selectedAddress)}
+          ) : (
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-medium">Contact</h2>
+                <Link
+                  href="/login"
+                  className="text-sm text-[#453121] underline"
                 >
-                  {isProcessing ? "Processing..." : "Place Order"}
-                </Button>
-
-                <Link href="/cart">
-                  <Button size="lg" color="white" className="w-full mt-3">
-                    Back to Cart
-                  </Button>
+                  Sign in
                 </Link>
               </div>
+              <input
+                type="email"
+                placeholder="Email"
+                className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+              />
             </div>
+          )}
+
+          {/* Delivery Address */}
+          <div className="mb-8">
+            <h2 className="text-lg font-medium mb-3">Delivery</h2>
+
+            {user && user.addresses && user.addresses.length > 0 ? (
+              <Modal>
+                <div className="space-y-3">
+                  {user.addresses.map((address) => (
+                    <label
+                      key={address._id}
+                      className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition ${
+                        selectedAddress === address._id
+                          ? "border-[#121212] bg-white shadow-sm"
+                          : "border-gray-300 bg-white hover:border-gray-400"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="address"
+                        checked={selectedAddress === address._id}
+                        onChange={() => setSelectedAddress(address._id!)}
+                        className="mt-1 accent-[#121212]"
+                      />
+                      <div className="flex-1">
+                        <p className="font-medium">
+                          {address.firstName} {address.lastName}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {address.address}, {address.city}, {address.state}
+                        </p>
+                        <p className="text-sm text-gray-600">{address.phone}</p>
+                      </div>
+                    </label>
+                  ))}
+
+                  <Modal.Open opens="add-address">
+                    <button className="text-sm cursor-pointer text-[#121212] hover:underline inline-block mt-2">
+                      + Add new address
+                    </button>
+                  </Modal.Open>
+                </div>
+                <AddAddressModal />
+              </Modal>
+            ) : (
+              <div className="space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="First name"
+                      value={guestInfo.firstName}
+                      onChange={(e) =>
+                        setGuestInfo({
+                          ...guestInfo,
+                          firstName: e.target.value,
+                        })
+                      }
+                      className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Last name"
+                      value={guestInfo.lastName}
+                      onChange={(e) =>
+                        setGuestInfo({
+                          ...guestInfo,
+                          lastName: e.target.value,
+                        })
+                      }
+                      className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                    />
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Address"
+                  value={guestInfo.address}
+                  onChange={(e) =>
+                    setGuestInfo({
+                      ...guestInfo,
+                      address: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    placeholder="City"
+                    value={guestInfo.city}
+                    onChange={(e) =>
+                      setGuestInfo({
+                        ...guestInfo,
+                        city: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                  />
+                  <input
+                    type="text"
+                    placeholder="State"
+                    value={guestInfo.state}
+                    onChange={(e) =>
+                      setGuestInfo({
+                        ...guestInfo,
+                        state: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                  />
+                </div>
+                <input
+                  type="tel"
+                  placeholder="Phone"
+                  value={guestInfo.phone}
+                  onChange={(e) =>
+                    setGuestInfo({
+                      ...guestInfo,
+                      phone: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Payment Method */}
+          <div className="mb-8">
+            <h2 className="text-lg font-medium mb-3">Payment</h2>
+            <label className="flex items-start gap-3 p-4 border border-[#767676] cursor-pointer hover:border-[#121212] transition-colors group">
+              <input
+                type="radio"
+                name="payment"
+                defaultChecked
+                className="mt-1 size-5  accent-[#121212]"
+              />
+              <div className="flex-1">
+                <div className="flex items-center gap-1 mb-">
+                  <p className="font-medium text-sm">Order via WhatsApp</p>
+                </div>
+                <p className="text-xs text-[#3b3b3b]  leading-relaxed">
+                  Complete your order through WhatsApp.
+                </p>
+              </div>
+              <BsWhatsapp size={24} className="text-green-600 self-center" />
+            </label>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center justify-between">
+            <Link
+              href="/cart"
+              className="flex items-center gap-1 text-[#121212] text-sm hover:underline"
+            >
+              <BsChevronLeft size={14} />
+              <span>Return to cart</span>
+            </Link>
+            <Button
+              size="lg"
+              onClick={handlePlaceOrder}
+              disabled={isProcessing || (!!user && !selectedAddress)}
+              className="px-8"
+            >
+              {isProcessing ? "Processing..." : "Place order"}
+            </Button>
           </div>
         </div>
-      </Container>
-    </div>
+      </div>
+
+      {/* Right Column: Order Summary */}
+      <div className="bg-[#fafafa] lg:border-l border-gray-200 py-8 lg:py-12">
+        <div className="max-w-[522px] px-8 mr-auto">
+          {/* Order Items */}
+          <div className="space-y-4 mb-6">
+            {items.map((item) => (
+              <div
+                key={`${item.product._id}-${item.color}-${item.material}-${item.size}`}
+                className="flex gap-4"
+              >
+                <div className="relative">
+                  {item.image && (
+                    <div
+                      className="w-16 h-16 bg-gray-100 rounded-lg border border-gray-200"
+                      style={{
+                        backgroundImage: `url(${item.image})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    />
+                  )}
+                  <span className="absolute -top-2 -right-2 bg-gray-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                    {item.quantity}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{item.title}</p>
+                  <p className="text-xs text-gray-600 mt-0.5">
+                    {item.color} / {item.material} / {item.size}
+                  </p>
+                </div>
+                <div className="text-sm font-medium">
+                  {formatNaira(item.price * item.quantity)}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Totals */}
+          <div className="space-y-3 pb-4 mb-4 border-b border-gray-200">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">Subtotal</span>
+              <span className="font-medium">{formatNaira(subtotal)}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">Shipping</span>
+              <span className="font-medium">
+                {shipping === 0 ? "Free" : formatNaira(shipping)}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex justify-between text-base font-medium">
+            <span>Total</span>
+            <span className="text-xl">{formatNaira(total)}</span>
+          </div>
+        </div>
+      </div>
+    </React.Fragment>
   );
 }

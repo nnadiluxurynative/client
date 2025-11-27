@@ -34,9 +34,9 @@ export default function CartPage() {
   return (
     <div className="py-12">
       <Container>
-        <div className=" mx-auto">
+        <div className="">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl sm:text-4xl font-medium">Cart</h1>
+            <h1 className="text-3xl font-medium">Cart</h1>
             <button
               onClick={clearCart}
               className="text-sm cursor-pointer flex gap-2 items-center hover:underline"
@@ -46,7 +46,7 @@ export default function CartPage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 gap-x-[30px]">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 gap-x-[30px]">
             {/* Cart Items */}
             <div className="lg:col-span-2 space-y-4 lg:pr-[30px]">
               {items.map((item) => (
@@ -67,7 +67,7 @@ export default function CartPage() {
                     className="absolute top-0 cursor-pointer right-0 p-2 pr-0"
                     aria-label="Remove item"
                   >
-                    <Trash variant="Outline" color="#121212" size={22} />
+                    <Trash variant="Outline" color="#121212" size={20} />
                   </button>
 
                   {/* Image */}
@@ -95,9 +95,7 @@ export default function CartPage() {
                     <p className="text-sm text-[#3b3b3b] mt-1">
                       {item.color} / {item.material} / {item.size}
                     </p>
-                    <p className="text-base mt-2 text-[#3b3b3b]">
-                      {formatNaira(item.price)}
-                    </p>
+                    <p className="text-base mt-2">{formatNaira(item.price)}</p>
 
                     {/* Quantity Controls */}
                     <div className="flex items-center mt-3">
@@ -111,7 +109,7 @@ export default function CartPage() {
                             item.quantity - 1
                           )
                         }
-                        className="w-8 h-8 border border-grey flex items-center cursor-pointer justify-center hover:bg-gray-50"
+                        className="w-8 h-8 border border-grey flex transition-all items-center cursor-pointer justify-center hover:border-gray-400"
                       >
                         <BsDash />
                       </button>
@@ -128,7 +126,7 @@ export default function CartPage() {
                             item.quantity + 1
                           )
                         }
-                        className="w-8 h-8 border border-grey flex items-center justify-center hover:bg-gray-50 cursor-pointer"
+                        className="w-8 h-8 border border-grey transition-all flex items-center justify-center hover:border-gray-400 cursor-pointer"
                       >
                         <BsPlus />
                       </button>
@@ -136,7 +134,7 @@ export default function CartPage() {
                   </div>
 
                   {/* Item Total */}
-                  <div className="hidden sm:flex text-right items-end text-[#3b3b3b]">
+                  <div className="hidden sm:flex text-right items-end">
                     <p>{formatNaira(item.price * item.quantity)}</p>
                   </div>
                 </div>
@@ -155,7 +153,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Shipping</span>
-                    <span>Calculated at checkout</span>
+                    <span>Free</span>
                   </div>
                 </div>
 
@@ -166,7 +164,7 @@ export default function CartPage() {
                   </div>
                 </div>
                 <Link href="/checkout" className="flex">
-                  <Button size="lg" className="w-full mb-3">
+                  <Button size="lg" className="w-full">
                     Proceed to Checkout
                   </Button>
                 </Link>

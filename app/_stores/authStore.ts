@@ -147,7 +147,8 @@ export const useAuthStore = create<AuthState>()(
             set({ accessToken: null, user: null });
           }, 2000);
           // Clear persisted data from localStorage
-          localStorage.clear();
+          localStorage.removeItem("auth-storage");
+          localStorage.removeItem("orders-storage");
           // Redirect to login if on a protected route
           if (window.location.pathname.startsWith("/account"))
             window.location.replace("/login");

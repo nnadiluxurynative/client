@@ -34,7 +34,7 @@ function DeleteAddressModal({
   return (
     <Modal.Window title="Delete address" name="delete-address">
       <p>Are you sure you want to delete this address? </p>
-      <div className="flex gap-3 mt-4">
+      <div className="flex gap-3 mt-4 justify-end">
         {/* Cancel button */}
         <Button
           color="white"

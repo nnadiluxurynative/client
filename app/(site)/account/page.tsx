@@ -58,7 +58,7 @@ export default function Account() {
           {addressesLength > 0 && activeAddress ? (
             <div className="mt-1 flex flex-col gap-1">
               <p>{activeAddress.address}</p>
-              <p>
+              <p className="capitalize">
                 {activeAddress.city}, {activeAddress.state}
               </p>
               <p>{activeAddress.country}</p>

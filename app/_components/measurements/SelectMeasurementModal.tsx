@@ -32,7 +32,7 @@ export default function SelectMeasurementModal({ onSelect }: Props) {
           {measurements.map((m: any) => (
             <label
               key={m._id}
-              className={`flex items-center gap-3 accent-[#121212] p-2 border cursor-pointer ${
+              className={`flex items-center gap-3 accent-[#121212] p-2 py-4 border cursor-pointer ${
                 selected === m._id ? "border-[#121212]" : "border-[#767676]"
               }`}
             >
@@ -43,10 +43,10 @@ export default function SelectMeasurementModal({ onSelect }: Props) {
                 className="size-5"
                 onChange={() => setSelected(m._id)}
               />
-              <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
                 <p className="font-medium text-sm">{m.name}</p>
-                <p className="text-sm leading-3.5 text-gray-500">
-                  {m.details?.unit}
+                <p className="text-sm leading-3.5 text-[#3b3b3b]">
+                  ({m.details?.unit})
                 </p>
               </div>
             </label>

@@ -124,9 +124,7 @@ export default function CartSidebar() {
                     <p className="text-xs text-[#3b3b3b] mt-1">
                       {item.color} / {item.material} / {item.size}
                     </p>
-                    <p className="text-sm mt-1 text-[#3b3b3b]">
-                      {formatNaira(item.price)}
-                    </p>
+                    <p className="text-sm mt-1">{formatNaira(item.price)}</p>
 
                     {/* Quantity Controls */}
                     <div className="flex items-center mt-2">
@@ -140,7 +138,7 @@ export default function CartSidebar() {
                             item.quantity - 1
                           )
                         }
-                        className="w-6 h-6 border border-grey flex items-center cursor-pointer justify-center text-sm hover:bg-gray-50"
+                        className="w-6 h-6 border border-grey flex items-center cursor-pointer justify-center text-sm hover:border-gray-400 transition-all"
                       >
                         <BsDash />
                       </button>
@@ -157,7 +155,7 @@ export default function CartSidebar() {
                             item.quantity + 1
                           )
                         }
-                        className="w-6 h-6 border border-grey flex items-center justify-center text-sm hover:bg-gray-50 cursor-pointer"
+                        className="w-6 h-6 border transition-all border-grey flex items-center justify-center text-sm hover:border-gray-400 cursor-pointer"
                       >
                         <BsPlus />
                       </button>
