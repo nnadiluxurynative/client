@@ -109,7 +109,7 @@ export default function CartPage() {
                             item.quantity - 1
                           )
                         }
-                        className="w-8 h-8 border border-grey flex transition-all items-center cursor-pointer justify-center hover:border-gray-400"
+                        className="w-6 h-6 border border-grey flex transition-all items-center cursor-pointer justify-center hover:border-gray-400"
                       >
                         <BsDash />
                       </button>
@@ -126,7 +126,7 @@ export default function CartPage() {
                             item.quantity + 1
                           )
                         }
-                        className="w-8 h-8 border border-grey transition-all flex items-center justify-center hover:border-gray-400 cursor-pointer"
+                        className="w-6 h-6 border border-grey transition-all flex items-center justify-center hover:border-gray-400 cursor-pointer"
                       >
                         <BsPlus />
                       </button>

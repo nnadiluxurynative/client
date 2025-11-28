@@ -61,7 +61,12 @@ function EditAddressModal({
       name="edit-address"
       onClose={handleClose}
     >
-      <Form onSubmit={handleSubmit} ref={formRef} message={message}>
+      <Form
+        key={address?._id || "address-form"}
+        onSubmit={handleSubmit}
+        ref={formRef}
+        message={message}
+      >
         <Form.InputGroup>
           <Form.Input
             type="text"
@@ -88,7 +93,7 @@ function EditAddressModal({
           />
           <Form.Select
             label="State"
-            defaultValue={address?.state}
+            defaultValue={address?.state?.trim().toLowerCase()}
             options={nigerianStates}
             name="state"
             required
@@ -109,7 +114,7 @@ function EditAddressModal({
           defaultValue={address?.phone}
         />
         <Form.CheckBox label="Set as default" name="isDefault" />
-        <div className="flex gap-3 mt-1">
+        <div className="flex gap-3 mt-1 justify-end">
           <Button
             color="white"
             type="button"

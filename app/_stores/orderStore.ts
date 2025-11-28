@@ -29,6 +29,36 @@ export const useOrdersStore = create<OrdersState>()(
         const order = orders.find((_order, i) => Number(id) === i + 1001);
         return order;
       },
+      createOrder: async (payload) => {
+        try {
+          const res = await API.post<GenericAPIResponse<any>>(
+            "/orders",
+            payload
+          );
+          return res.data.url;
+        } catch (err: any) {
+          const message = handleErrorMessage(err, "Failed to create order");
+          throw Error(message);
+        }
+      },
+      verifyPayment: async (
+        _data: undefined,
+        transactionId: string,
+        txRef: string
+      ) => {
+        try {
+          const res = await API.get<GenericAPIResponse<Order>>(
+            `/orders/verify-order?tx_ref=${txRef}&transaction_id=${transactionId}`
+          );
+          return res.data.data;
+        } catch (err: any) {
+          const message = handleErrorMessage(
+            err,
+            "Payment verification failed"
+          );
+          throw Error(message);
+        }
+      },
     }),
 
     {

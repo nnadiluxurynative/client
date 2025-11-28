@@ -102,7 +102,7 @@ function Window({
         >
           {title && <h3 className="text-lg font-medium">{title}</h3>}
           <button className="button" onClick={handleClose}>
-            <BsXLg size={18} color="#121212" />
+            <BsXLg size={16} color="#121212" />
           </button>
         </div>
         {children}

@@ -18,12 +18,12 @@ export default function CheckoutLayout({
       {/* Simplified Header */}
       <header className="border-b border-grey py-4">
         <Container>
-          <div className="max-w-[522px] lg:max-w-[980px] mx-auto flex items-center justify-between">
+          <div className="max-w-[522px] lg:max-w-[1080px] mx-auto flex items-center justify-between">
             <Link href="/" className="flex text-lg font-bold">
               nnadiluxurynative
             </Link>
             <Link href="/cart" className="flex">
-              <Bag2 color="#453121" size={24} variant="Outline" />
+              <Bag2 color="#121212" size={24} variant="Outline" />
             </Link>
           </div>
         </Container>

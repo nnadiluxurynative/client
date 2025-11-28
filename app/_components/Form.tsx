@@ -132,7 +132,7 @@ function Select({ className, label, options, ...rest }: SelectProps) {
       </label>
 
       {/* Chevron indicator on the right */}
-      <span className="absolute right-3 top-1/2 -translate-y-1/2 bg-white py-2">
+      <span className="absolute right-3 top-1/2 -translate-y-1/2 bg-white py-2 pointer-events-none">
         <BsChevronDown
           size={16}
           className=" text-[#767676] peer-focus:text-foreground peer-invalid:text-[#767676] peer-valid:text-foreground"
@@ -233,9 +233,9 @@ function CheckBox({
       <input type="checkbox" className="peer hidden" {...rest} />
 
       {/* Visible custom checkbox */}
-      <span className="w-4 h-4 flex items-center justify-center border border-grey  peer-checked:bg-[#121212] peer-checked:border-[#121212] peer-checked:[&>svg]:opacity-100">
+      <span className="w-4 h-4 flex items-center justify-center border border-gray-300  peer-checked:bg-[#121212] peer-checked:border-[#121212] peer-checked:[&>svg]:opacity-100">
         {/* Check icon becomes visible when checked (opacity toggled via peer) */}
-        <BiCheck size={24} className="text-[#ffffff] opacity-0" />
+        <BiCheck size={20} className="text-[#ffffff] opacity-0" />
       </span>
 
       {/* Label text for the checkbox */}
