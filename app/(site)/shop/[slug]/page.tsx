@@ -474,7 +474,7 @@ export default function page() {
                               </h3>
                               <p>
                                 Still unsure what size to get? Check out our{" "}
-                                <Link href="/size-chart">
+                                <Link href="/size-guide">
                                   <button className="cursor-pointer link--underline">
                                     size guide.
                                   </button>

@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { SearchNormal1 } from "iconsax-react";
+import React, { useEffect, useRef, useState } from "react";
+import { CloseCircle, SearchNormal1 } from "iconsax-react";
 import { BsXLg } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
 import { useDisableScroll } from "../_hooks/useDisableScroll";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type SearchBarProps = {
   open: boolean;
@@ -17,7 +18,12 @@ export default function SearchBar({
   open,
   setOpen,
 }: SearchBarProps) {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q") || "";
   const inputRef = useRef<HTMLInputElement>(null);
+  const [searchTerm, setSearchTerm] = useState(query);
+
+  const router = useRouter();
 
   // Auto-focus when opened
   useEffect(() => {
@@ -35,8 +41,33 @@ export default function SearchBar({
     return () => window.removeEventListener("keydown", handleKey);
   }, []);
 
+  // Clear search
+  useEffect(() => {
+    setSearchTerm(query);
+  }, [searchParams]);
+
   // Disable scroll when search is open
   useDisableScroll(open);
+
+  function handleSubmit(e: React.FormEvent) {
+    // Prevent default form submission
+    e.preventDefault();
+
+    // Close search bar
+    setOpen(false);
+
+    // Get search term
+    const term = searchTerm.trim();
+    if (!term) return;
+
+    // Redirect to search page
+    const url = new URL(window.location.href);
+    url.pathname = "/search";
+    url.searchParams.delete("sort");
+    url.searchParams.delete("price");
+    url.searchParams.set("q", term);
+    router.push(url.toString());
+  }
 
   return (
     <React.Fragment>
@@ -51,22 +82,40 @@ export default function SearchBar({
         )}
         style={{ height: `${headerHeight}px` }}
       >
-        <div className="flex w-full items-center justify-center max-w-[960px] px-4 mx-auto gap-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex w-full items-center justify-center max-w-[960px] px-4 mx-auto gap-4"
+        >
           <div className="px-4 py-2  flex-1 max-h-11 focus-within:border-[#121212] outline-0 flex items-center gap-3 rounded-xs border border-[#767676]">
             <input
               ref={inputRef}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               type="text"
               placeholder="Search"
               className="flex-1 w-0 outline-0  placeholder:font-satoshi"
             />
-            <button className="button">
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                className="button"
+              >
+                <CloseCircle color="#121212" size={20} variant="Outline" />
+              </button>
+            )}
+            <button className="button" type="submit">
               <SearchNormal1 color="#121212" size={20} variant="Outline" />
             </button>
           </div>
-          <button onClick={() => setOpen(false)} className="button">
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="button"
+          >
             <BsXLg size={20} color="#121212" />
           </button>
-        </div>
+        </form>
       </div>
       {/* Overlay */}
       <div

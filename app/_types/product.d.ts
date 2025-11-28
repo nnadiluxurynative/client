@@ -27,4 +27,5 @@ export type ProductsState = {
   getRelatedProducts: (idOrSlug: string) => Promise<Product[]>;
   getFeaturedProducts: () => Promise<Product[]>;
   fetchProducts: () => Promise<Product[]>;
+  searchProducts: (searchTerm: string) => Promise<Product[]>;
 };

@@ -74,7 +74,7 @@ export default function CartPage() {
                   {item.image && (
                     <Link
                       href={`/shop/${item.product.slug}`}
-                      className="w-40  overflow-hidden bg-gray-100 shrink-0"
+                      className="h-44 overflow-hidden bg-gray-100 shrink-0"
                     >
                       <img
                         src={item.image}
@@ -143,7 +143,7 @@ export default function CartPage() {
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="border border-grey p-6 sticky top-24">
+              <div className="border border-grey p-6 sticky top-24 rounded-xs">
                 <h2 className="text-xl font-medium mb-4">Order Summary</h2>
 
                 <div className="space-y-3 mb-4">
@@ -165,7 +165,7 @@ export default function CartPage() {
                 </div>
                 <Link href="/checkout" className="flex">
                   <Button size="lg" className="w-full">
-                    Proceed to Checkout
+                    Proceed to checkout
                   </Button>
                 </Link>
               </div>

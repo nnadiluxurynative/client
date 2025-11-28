@@ -11,7 +11,7 @@ type LoaderProps = {
 export default function Loader({
   count = 12,
   className = "",
-  imgHeight = "sm:h-[670px]",
+  imgHeight = "sm:h-[650px]",
 }: LoaderProps) {
   return (
     <div>

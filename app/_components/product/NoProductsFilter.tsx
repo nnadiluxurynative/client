@@ -18,7 +18,7 @@ export default function NoProductsFilter({
       <p className="text-sm  mb-6">{description}</p>
       <div className="flex justify-center">
         <Button size="md" onClick={onReset}>
-          Reset Filters
+          Reset filters
         </Button>
       </div>
     </div>

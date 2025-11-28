@@ -4,7 +4,12 @@ import { cookies } from "next/headers";
 
 // Protected and guest route definitions
 const PROTECTED_ROUTES = ["/account"];
-const GUEST_ROUTES = ["/login", "/signup", "/forgot-password"];
+const GUEST_ROUTES = [
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/reset-password",
+];
 
 export default async function middleware(req: NextRequest) {
   const url = req.nextUrl;

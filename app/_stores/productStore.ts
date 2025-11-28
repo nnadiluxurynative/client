@@ -70,6 +70,18 @@ export const useProductStore = create<ProductsState>((set, get) => ({
     }
   },
 
+  searchProducts: async (searchTerm: string) => {
+    try {
+      const res = await API.get<GenericAPIResponse<Product[]>>(
+        `/products?search=${encodeURIComponent(searchTerm)}`
+      );
+      return res.data.data ?? [];
+    } catch (err: any) {
+      const message = handleErrorMessage(err, "Search failed");
+      throw Error(message);
+    }
+  },
+
   getFeaturedProducts: async () => {
     try {
       const res = await API.get<GenericAPIResponse<Product[]>>(

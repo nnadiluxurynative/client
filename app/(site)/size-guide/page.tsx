@@ -146,7 +146,7 @@ export default function SizeChartPage() {
         <h2 className="text-2xl font-medium mb-3">
           Need a Custom Measurement?
         </h2>
-        <p className="text-[#3b3b3b] mb-6 max-w-xl mx-auto">
+        <p className="text-[#3b3b3b] mb-8 max-w-xl mx-auto">
           Create a measurement profile and we'll tailor each piece to your
           precise fit.
         </p>

@@ -102,7 +102,8 @@ export default function CartSidebar() {
                     <Link
                       href={`/shop/${item.product.slug}`}
                       onClick={toggleCart}
-                      className="w-24 overflow-hidden bg-gray-100 shrink-0"
+                      className="h-32
+                       overflow-hidden bg-gray-100 shrink-0"
                     >
                       <img
                         src={item.image}
@@ -177,7 +178,7 @@ export default function CartSidebar() {
             <div className="flex flex-col gap-y-3">
               <Link href="/cart" onClick={toggleCart} className="flex">
                 <Button size="lg" color="white" className="w-full">
-                  View Cart
+                  View cart
                 </Button>
               </Link>
               <Button
