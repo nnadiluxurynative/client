@@ -2,22 +2,21 @@
 import Accordion from "@/app/_components/Accordion";
 import Button from "@/app/_components/Button";
 import Container from "@/app/_components/Container";
-import ProductItem from "@/app/_components/product/ProductItem";
-import Link from "next/link";
-import useProductStore from "@/app/_stores/productStore";
-import Loader from "@/app/_components/product/Loader";
-import Modal from "@/app/_components/modal/Modal";
 import SelectMeasurementModal from "@/app/_components/measurements/SelectMeasurementModal";
-import SizeGuideModal from "@/app/_components/measurements/SizeGuideModal";
+import Modal from "@/app/_components/modal/Modal";
+import Loader from "@/app/_components/product/Loader";
+import ProductItem from "@/app/_components/product/ProductItem";
 import { useAuthStore } from "@/app/_stores/authStore";
+import { useCartStore } from "@/app/_stores/cartStore";
+import useProductStore from "@/app/_stores/productStore";
+import { Measurement } from "@/app/_types/measurement";
 import type { Product } from "@/app/_types/product";
 import { formatNaira, isLightColor } from "@/app/_utils/helpers";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
-import { useCartStore } from "@/app/_stores/cartStore";
-import { Measurement } from "@/app/_types/measurement";
 
 export default function page() {
   const router = useRouter();
@@ -84,7 +83,7 @@ export default function page() {
   const { user } = useAuthStore();
 
   // static sizes (use these instead of product-provided sizes)
-  const SIZES = ["XS", "S", "M", "L", "XL"];
+  const SIZES = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
 
   // Initialize selected options when product loads
   useEffect(() => {
@@ -356,7 +355,7 @@ export default function page() {
                       <button
                         key={i}
                         onClick={() => setSelectedMaterial(m.name)}
-                        className={`cursor-pointer text-sm px-3 py-1 border ${
+                        className={`cursor-pointer rounded-xs text-sm px-3 py-1 border ${
                           selectedMaterial === m.name
                             ? "border-black"
                             : "border-grey"
@@ -379,7 +378,7 @@ export default function page() {
                             key={i}
                             onClick={() => setSelectedSize(s)}
                             className={twMerge(
-                              "px-3 py-1 border text-sm cursor-pointer",
+                              "px-3 py-1 border text-sm rounded-xs cursor-pointer",
                               selectedSize === s
                                 ? "border-black"
                                 : "border-grey"
@@ -397,7 +396,7 @@ export default function page() {
                                 <button
                                   onClick={() => setSelectedSize("CUSTOM")}
                                   className={twMerge(
-                                    "px-3 py-1 border text-sm cursor-pointer",
+                                    "px-3 py-1 border text-sm rounded-xs cursor-pointer",
                                     selectedSize === "CUSTOM"
                                       ? "border-black"
                                       : "border-grey"
@@ -449,7 +448,9 @@ export default function page() {
                             {product?.features &&
                               product.features.length > 0 && (
                                 <>
-                                  <h3 className="font-medium mb-1">Features</h3>
+                                  <h3 className="font-medium mb-1 text-[#121212]">
+                                    Features
+                                  </h3>
                                   <ul className="list-disc space-y-1 marker:text-[#121212]">
                                     {product.features.map((feat, i) => (
                                       <li key={i}>{feat}</li>
@@ -468,32 +469,39 @@ export default function page() {
                         answer: (
                           <div>
                             <div className="mb-3">
-                              <h3 className="font-medium mb-1">Size Help</h3>
+                              <h3 className="font-medium mb-1 text-[#121212]">
+                                Size Help
+                              </h3>
                               <p>
                                 Still unsure what size to get? Check out our{" "}
-                                <Modal>
-                                  <Modal.Open opens="size-guide">
-                                    <button className="cursor-pointer link--underline">
-                                      size guide.
-                                    </button>
-                                  </Modal.Open>
-                                  <SizeGuideModal />
-                                </Modal>
+                                <Link href="/size-chart">
+                                  <button className="cursor-pointer link--underline">
+                                    size guide.
+                                  </button>
+                                </Link>
                               </p>
                             </div>
                             <div className="mb-3">
-                              <h3 className="font-medium mb-1">Fit Options</h3>
+                              <h3 className="font-medium mb-1 text-[#121212]">
+                                Fit Options
+                              </h3>
                               <ul className="list-disc pl-5 space-y-1 marker:text-[#121212]">
                                 <li>
-                                  <span className="font-medium">Slim:</span>{" "}
+                                  <span className="font-medium text-[#121212]">
+                                    Slim:
+                                  </span>{" "}
                                   Fitted silhouette, modern cut
                                 </li>
                                 <li>
-                                  <span className="font-medium">Regular:</span>{" "}
+                                  <span className="font-medium text-[#121212]">
+                                    Regular:
+                                  </span>{" "}
                                   Classic fit, comfortable
                                 </li>
                                 <li>
-                                  <span className="font-medium">Relaxed:</span>{" "}
+                                  <span className="font-medium text-[#121212]">
+                                    Relaxed:
+                                  </span>{" "}
                                   Loose fit, traditional style
                                 </li>
                               </ul>
@@ -509,7 +517,7 @@ export default function page() {
                         answer: (
                           <div>
                             <div className="mb-3">
-                              <h3 className="font-medium mb-1">
+                              <h3 className="font-medium mb-1 text-[#121212]">
                                 Production time
                               </h3>
                               <p>
@@ -518,7 +526,9 @@ export default function page() {
                               </p>
                             </div>
                             <div className="mb-3">
-                              <h3 className="font-medium mb-1">Shipping</h3>
+                              <h3 className="font-medium mb-1 text-[#121212]">
+                                Shipping
+                              </h3>
                               <ul className="list-disc pl-5 space-y-1 marker:text-[#121212]">
                                 <li>Free shipping within Nigeria</li>
                                 <li>
@@ -527,7 +537,9 @@ export default function page() {
                               </ul>
                             </div>
                             <div className="mb-3">
-                              <h3 className="font-medium mb-1">Returns</h3>
+                              <h3 className="font-medium mb-1 text-[#121212]">
+                                Returns
+                              </h3>
                               <p>
                                 Due to the custom nature of our garments, we
                                 cannot accept returns. However, we offer

@@ -88,7 +88,7 @@ function Window({
 
       <div
         className={twMerge(
-          "w-full opacity-0 transition-all pointer-events-none fixed z-60 bottom-0 duration-200 ease-out bg-white px-4 py-6 sm:p-6 sm:max-w-[580px] sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/4 translate-y-1/2 ",
+          "w-full opacity-0 transition-all pointer-events-none rounded-xs fixed z-60 bottom-0 duration-200 ease-out bg-white px-4 py-6 sm:p-6 sm:max-w-[580px] sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/4 translate-y-1/2 ",
           isActive &&
             "opacity-100 pointer-events-auto translate-y-0 sm:-translate-y-1/2",
           className && className

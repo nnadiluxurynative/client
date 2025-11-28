@@ -71,7 +71,7 @@ function AccordionItem({
         }}
         className="text-muted-foreground"
       >
-        <div ref={contentRef} className="pb-4 text-sm">
+        <div ref={contentRef} className="pb-4 text-sm text-[#3b3b3b]">
           {item.answer}
         </div>
       </div>

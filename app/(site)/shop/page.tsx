@@ -152,7 +152,7 @@ function page() {
             <select
               value={localPrice}
               onChange={(e) => setLocalPrice(e.target.value)}
-              className="appearance-none w-full px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+              className="appearance-none rounded-xs w-full px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
               aria-label="Filter by price"
             >
               <option value="all">All Prices</option>
@@ -172,7 +172,7 @@ function page() {
             <select
               value={localSort}
               onChange={(e) => setLocalSort(e.target.value)}
-              className="appearance-none px-3 w-full pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+              className="appearance-none rounded-xs px-3 w-full pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
               aria-label="Sort products"
             >
               <option value="newest">Newest</option>
@@ -228,7 +228,7 @@ function page() {
                           onChange={(e) =>
                             handleFilterChange(sortBy, e.target.value)
                           }
-                          className="appearance-none px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+                          className="appearance-none px-3 pr-10 text-sm py-2 border rounded-xs border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
                           aria-label="Filter by price"
                         >
                           <option value="all">All Prices</option>
@@ -251,7 +251,7 @@ function page() {
                             onChange={(e) =>
                               handleFilterChange(e.target.value, filterPrice)
                             }
-                            className="appearance-none px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+                            className="appearance-none rounded-xs px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
                             aria-label="Sort products"
                           >
                             <option value="newest">Newest</option>

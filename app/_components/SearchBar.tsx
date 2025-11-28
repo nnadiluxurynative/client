@@ -52,12 +52,12 @@ export default function SearchBar({
         style={{ height: `${headerHeight}px` }}
       >
         <div className="flex w-full items-center justify-center max-w-[960px] px-4 mx-auto gap-4">
-          <div className="px-4 py-2 focus-within:outline flex-1 max-h-11 focus-within:outline-[#121212] flex items-center gap-3 border border-[#767676]">
+          <div className="px-4 py-2  flex-1 max-h-11 focus-within:border-[#121212] outline-0 flex items-center gap-3 rounded-xs border border-[#767676]">
             <input
               ref={inputRef}
               type="text"
               placeholder="Search"
-              className="flex-1 w-0 outline-0 placeholder:font-satoshi"
+              className="flex-1 w-0 outline-0  placeholder:font-satoshi"
             />
             <button className="button">
               <SearchNormal1 color="#121212" size={20} variant="Outline" />

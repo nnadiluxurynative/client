@@ -73,12 +73,14 @@ function page() {
         {/* Add measurement button */}
         <div className="flex flex-col justify-center gap-2 mt-6 items-center">
           <Modal.Open opens="add-measurement">
-            <Button className="text-center">Add profile</Button>
+            <Button className="text-center">Create profile</Button>
           </Modal.Open>
-          <button className="text-sm flex items-center cursor-pointer gap-1">
-            <BiHelpCircle size={16} className="mt-px" />
-            <span className="link--underline">Measurement guide</span>
-          </button>
+          <Link href="/size-chart">
+            <button className="text-sm flex items-center cursor-pointer gap-1">
+              <BiHelpCircle size={16} className="mt-px" />
+              <span className="link--underline">Measurement guide</span>
+            </button>
+          </Link>
         </div>
         {/* Render measurements when present (default-first ordering applied above) */}
         {measurements && (

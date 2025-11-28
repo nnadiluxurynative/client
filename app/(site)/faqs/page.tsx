@@ -38,7 +38,7 @@ const faqs = [
 
 export default function FAQsPage() {
   return (
-    <Container className="py-12 max-w-3xl mx-auto">
+    <Container className="py-12 max-w-4xl mx-auto">
       <h1 className="text-3xl text-center sm:text-4xl font-medium mb-8">
         Frequently Asked Questions
       </h1>
@@ -47,9 +47,10 @@ export default function FAQsPage() {
           <Accordion.Item key={idx} item={item} idx={idx} />
         ))}
       </Accordion>
-      <div className="mt-10 gap-4 text-center flex items-center justify-center">
-        <Link href="/" className="link--underline">
-          Back to homepage
+      <div className="mt-10 gap-2 text-center flex items-center justify-center">
+        <p className="font-medium">Have more questions?</p>
+        <Link href="/contact" className="link--underline">
+          Get in touch
         </Link>
       </div>
     </Container>

@@ -47,7 +47,7 @@ function page() {
               </p>
             </div>
             <div>
-              <div className="overflow-x-auto border border-grey">
+              <div className="overflow-x-auto border border-grey rounded-xs">
                 <table className="min-w-full text-sm whitespace-nowrap">
                   <thead>
                     <tr className="border-b bg-gray-50 border-b-grey text-left text-xs uppercase tracking-wide ">
@@ -117,8 +117,8 @@ function page() {
                 {order.shippingAddress.firstName}{" "}
                 {order.shippingAddress.lastName}
               </p>
-              <p>{order.shippingAddress.address}</p>
-              <p>
+              <p className="capitalize">{order.shippingAddress.address}</p>
+              <p className="capitalize">
                 {order.shippingAddress.city}, {order.shippingAddress.state}
               </p>
               <p>{order.shippingAddress.country}</p>

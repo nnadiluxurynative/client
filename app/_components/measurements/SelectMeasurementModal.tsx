@@ -32,7 +32,7 @@ export default function SelectMeasurementModal({ onSelect }: Props) {
           {measurements.map((m: any) => (
             <label
               key={m._id}
-              className={`flex items-center gap-3 accent-[#121212] p-2 py-4 border cursor-pointer ${
+              className={`flex items-center gap-3 rounded-xs accent-[#121212] p-2 py-4 border cursor-pointer ${
                 selected === m._id
                   ? "border-[#121212]"
                   : "border-[#767676] hover:border-[#121212]"

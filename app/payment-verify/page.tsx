@@ -104,7 +104,7 @@ export default function PaymentVerifyPage() {
               process your order shortly.
             </p>
 
-            <div className="bg-[#fafafa] p-6 mb-8 text-left">
+            <div className="bg-gray-50 p-6 mb-8 text-left rounded-xs">
               <h2 className="text-lg font-medium mb-4">Order Details</h2>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">

@@ -107,7 +107,7 @@ function Select({ className, label, options, ...rest }: SelectProps) {
       <select
         required
         className={twMerge(
-          "px-3 pt-4 pb-2 w-full bg-white appearance-none satoshi cursor-pointer peer text-base max-h-11 border border-[#767676] focus:outline-none focus:border-[#121212] ",
+          "px-3 pt-4 pb-2 w-full bg-white rounded-xs appearance-none satoshi cursor-pointer peer text-base max-h-11 border border-[#767676] focus:outline-none focus:border-[#121212] ",
           className
         )}
         {...rest}
@@ -152,7 +152,7 @@ function Input({ className, placeholder = "Email", ...rest }: InputProps) {
       <input
         placeholder=" "
         className={twMerge(
-          "px-3 py-2 pt-[22px] w-full peer flex-1 text-base max-h-11 border border-[#767676] focus:outline-none focus:border-[#121212]",
+          "px-3 py-2 pt-[22px] w-full peer flex-1 text-base max-h-11 rounded-xs border border-[#767676] focus:outline-none focus:border-[#121212]",
           className
         )}
         {...rest}
@@ -197,7 +197,7 @@ function Textarea({
   ...rest
 }: TextareaProps) {
   return (
-    <div className="relative px-3 py-2 pt-4 border border-[#767676] focus-within:border-[#121212]">
+    <div className="relative px-3 py-2 pt-4 border border-[#767676] rounded-xs focus-within:border-[#121212]">
       <textarea
         placeholder=" "
         className={twMerge(
@@ -233,7 +233,7 @@ function CheckBox({
       <input type="checkbox" className="peer hidden" {...rest} />
 
       {/* Visible custom checkbox */}
-      <span className="w-4 h-4 flex items-center justify-center border border-gray-300  peer-checked:bg-[#121212] peer-checked:border-[#121212] peer-checked:[&>svg]:opacity-100">
+      <span className="w-4 h-4 flex items-center justify-center border rounded-xs border-gray-300  peer-checked:bg-[#121212] peer-checked:border-[#121212] peer-checked:[&>svg]:opacity-100">
         {/* Check icon becomes visible when checked (opacity toggled via peer) */}
         <BiCheck size={20} className="text-[#ffffff] opacity-0" />
       </span>

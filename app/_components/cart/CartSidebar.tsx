@@ -138,7 +138,7 @@ export default function CartSidebar() {
                             item.quantity - 1
                           )
                         }
-                        className="w-6 h-6 border border-grey flex items-center cursor-pointer justify-center text-sm hover:border-gray-400 transition-all"
+                        className="w-6 h-6 border rounded-xs border-grey flex items-center cursor-pointer justify-center text-sm hover:border-gray-400 transition-all"
                       >
                         <BsDash />
                       </button>
@@ -155,7 +155,7 @@ export default function CartSidebar() {
                             item.quantity + 1
                           )
                         }
-                        className="w-6 h-6 border transition-all border-grey flex items-center justify-center text-sm hover:border-gray-400 cursor-pointer"
+                        className="w-6 h-6 border rounded-xs transition-all border-grey flex items-center justify-center text-sm hover:border-gray-400 cursor-pointer"
                       >
                         <BsPlus />
                       </button>

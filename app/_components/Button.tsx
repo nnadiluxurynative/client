@@ -28,7 +28,7 @@ export default function Button({
   return (
     <button
       className={twMerge(
-        "font-medium transition-all  disabled:opacity-80 disabled:cursor-not-allowed min-w-[120px] max-h-11 px-4 flex items-center justify-center cursor-pointer py-3",
+        "font-medium transition-all rounded-xs disabled:opacity-80 disabled:cursor-not-allowed min-w-[120px] max-h-11 px-4 flex items-center justify-center cursor-pointer py-3",
         className && className,
         size && sizeClasses[size],
         color && colorClasses[color]

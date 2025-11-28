@@ -162,7 +162,7 @@ export default function CheckoutPage() {
                     <div
                       key={address._id}
                       className={twMerge(
-                        `flex items-start gap-3 p-4 border bg-white border-[#767676] hover:border-[#121212] transition relative`,
+                        `flex items-start gap-3 p-4 border bg-white rounded-xs border-[#767676] hover:border-[#121212] transition relative`,
                         selectedAddress === address._id &&
                           "border-[#121212] hover:border-[#121212]"
                       )}
@@ -224,7 +224,7 @@ export default function CheckoutPage() {
                       type="text"
                       placeholder="First name"
                       required
-                      className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                      className="w-full px-3 rounded-xs py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
                     />
                   </div>
                   <div>
@@ -233,7 +233,7 @@ export default function CheckoutPage() {
                       type="text"
                       required
                       placeholder="Last name"
-                      className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                      className="w-full px-3 py-2 rounded-xs h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
                     />
                   </div>
                 </div>
@@ -242,7 +242,7 @@ export default function CheckoutPage() {
                   name="address"
                   placeholder="Address"
                   required
-                  className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                  className="w-full px-3 py-2 rounded-xs h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input
@@ -250,13 +250,13 @@ export default function CheckoutPage() {
                     name="city"
                     placeholder="City"
                     required
-                    className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                    className="w-full px-3 py-2 rounded-xs h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
                   />
                   <div className="relative">
                     <select
                       name="state"
                       required
-                      className="w-full appearance-none cursor-pointer px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                      className="w-full appearance-none cursor-pointer px-3 py-2 rounded-xs h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
                     >
                       {nigerianStates.map((state) => (
                         <option
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
                   name="phone"
                   placeholder="Phone"
                   required
-                  className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                  className="w-full px-3 py-2 h-11 border rounded-xs placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
                 />
               </div>
             )}
@@ -292,23 +292,17 @@ export default function CheckoutPage() {
             <div className="mb-3">
               <h2 className="text-xl font-medium">Payment</h2>
             </div>
-            <label className="flex items-start gap-3 p-4 border border-[#121212] cursor-pointer hover:border-[#121212] transition-colors group">
-              <input
-                type="radio"
-                name="payment"
-                defaultChecked
-                className="mt-1 size-5 accent-[#121212]"
-              />
+            <label className="flex items-start gap-3 p-4 px-6 rounded-xs bg-[#fff6e9] transition-colors group">
               <div className="flex-1">
-                <div className="flex items-center gap-1 mb-">
-                  <p className="font-medium text-sm">Pay with Flutterwave</p>
+                <div className="flex items-center gap-1">
+                  <p className="font-medium ">Flutterwave</p>
                 </div>
                 <p className="text-sm text-[#3b3b3b]  leading-relaxed">
                   Fast, safe, and easy payment through Flutterwave.
                 </p>
               </div>
               <span className="self-center">
-                <FlutterwaveLogo size={32} />
+                <FlutterwaveLogo size={28} />
               </span>
             </label>
           </div>
@@ -321,7 +315,7 @@ export default function CheckoutPage() {
               disabled={processing || (!!user && !selectedAddress)}
               className="w-full"
             >
-              {processing ? <Spinner /> : "Pay Now"}
+              {processing ? <Spinner /> : "Pay now"}
             </Button>
           </div>
         </form>

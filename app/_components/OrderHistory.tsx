@@ -20,7 +20,7 @@ function OrderHistory() {
     <React.Fragment>
       {orders.length > 0 ? (
         <div>
-          <div className="overflow-x-auto border border-grey">
+          <div className="overflow-x-auto border border-grey rounded-xs">
             <table className="min-w-full text-sm whitespace-nowrap">
               <thead>
                 <tr className="border-b bg-gray-50 border-b-grey text-left text-xs uppercase tracking-wide ">
@@ -64,7 +64,7 @@ function OrderHistory() {
               <button
                 onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                 disabled={currentPage === 1}
-                className="text-foreground hover:border-gray-400 border disabled:pointer-events-none disabled:hover:border-gray-300 border-gray-300 px-3 cursor-pointer py-1 disabled:opacity-80"
+                className="text-foreground rounded-xs hover:border-gray-400 border disabled:pointer-events-none disabled:hover:border-gray-300 border-gray-300 px-3 cursor-pointer py-1 disabled:opacity-80"
               >
                 Previous
               </button>
@@ -73,7 +73,7 @@ function OrderHistory() {
                   setCurrentPage((p) => Math.min(p + 1, totalPages))
                 }
                 disabled={currentPage === totalPages}
-                className="text-foreground hover:border-gray-400 border disabled:pointer-events-none disabled:hover:border-gray-300 border-gray-300 px-3 cursor-pointer py-1 disabled:opacity-80"
+                className="text-foreground rounded-xs hover:border-gray-400 border disabled:pointer-events-none disabled:hover:border-gray-300 border-gray-300 px-3 cursor-pointer py-1 disabled:opacity-80"
               >
                 Next
               </button>
