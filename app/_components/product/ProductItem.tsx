@@ -39,7 +39,9 @@ export default function ProductItem({ product }: { product: Product }) {
         />
       </Link>
       <div>
-        <h3 className="text-base font-medium">{product.title}</h3>
+        <Link href={`/shop/${product.slug}`} className="hover:underline">
+          <h3 className="text-base font-medium">{product.title}</h3>
+        </Link>
         <p className="mt-0.5 text-sm sm:text-base">
           {displayPrice !== null ? formatNaira(Number(displayPrice)) : "—"}
         </p>

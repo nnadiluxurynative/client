@@ -146,7 +146,7 @@ export default function CheckoutPage() {
                 name="email"
                 placeholder="Email"
                 required
-                className="w-full px-3 py-2 h-11 border placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
+                className="w-full px-3 py-2 h-11 border rounded-xs placeholder:text-[#767676] border-[#767676] focus:border-[#121212] outline-0"
               />
             </div>
           )}
@@ -297,7 +297,7 @@ export default function CheckoutPage() {
                 <div className="flex items-center gap-1">
                   <p className="font-medium ">Flutterwave</p>
                 </div>
-                <p className="text-sm text-[#3b3b3b]  leading-relaxed">
+                <p className="text-sm text-[#3b3b3b] leading-relaxed">
                   Fast, safe, and easy payment through Flutterwave.
                 </p>
               </div>

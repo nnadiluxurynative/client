@@ -1,247 +1,173 @@
 "use client";
 import Button from "@/app/_components/Button";
 import Container from "@/app/_components/Container";
-import { useState } from "react";
-import { BsEnvelope, BsPhone, BsWhatsapp, BsClock } from "react-icons/bs";
+import Form from "@/app/_components/Form";
+import Spinner from "@/app/_components/Spinner";
+import useMutate from "@/app/_hooks/useMutate";
+import API from "@/app/_lib/axios";
+import { GenericAPIResponse } from "@/app/_types/api";
+import { handleErrorMessage } from "@/app/_utils/helpers";
 
 function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const sendEmail = async (data: {
+    email: string;
+    name: string;
+    phone: string;
+    subject: string;
+    message: string;
+  }) => {
+    try {
+      const res = await API.post<GenericAPIResponse<any>>("/contact", data);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    // TODO: Implement contact form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    alert("Thank you for contacting us! We'll get back to you soon.");
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-    });
-    setIsSubmitting(false);
+      return res.data.message;
+    } catch (err: any) {
+      const message = handleErrorMessage(err, "Something went wrong");
+      throw Error(message);
+    }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  const [send, loading, message, setMessage] = useMutate(sendEmail);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries()) as {
+      email: string;
+      name: string;
+      phone: string;
+      subject: string;
+      message: string;
+    };
+
+    await send({
+      data,
+      onSuccess: (message) => {
+        form.reset();
+        // Set success message
+        setMessage({
+          type: "success",
+          message: message || "Verification email sent",
+        });
+      },
     });
   };
 
   return (
-    <Container className="py-12 max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="mb-12">
-        <h1 className="text-3xl sm:text-4xl font-medium mb-4">Contact Us</h1>
-        <p className="text-[#3b3b3b] max-w-2xl">
-          Have questions about our products or services? We're here to help.
-          Reach out to us through any of the channels below.
-        </p>
-      </div>
+    <div className="py-12">
+      <Container className="max-w-6xl mx-auto">
+        <h1 className="text-3xl text-center sm:text-4xl font-medium mb-8">
+          Get in Touch
+        </h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-[60px]">
-        {/* Contact Information */}
-        <div>
-          <h2 className="text-2xl font-medium mb-6">Contact Information</h2>
-
-          <div className="space-y-6">
-            {/* WhatsApp */}
-            <div className="flex items-start gap-4 pb-6 border-b border-grey">
-              <div className="shrink-0">
-                <BsWhatsapp className="text-green-600" size={24} />
+        {/* Split layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          {/* Left: Details */}
+          <div className="bg-gray-50 rounded-xs p-6 lg:p-8">
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div>
+                  <h3 className="font-medium text-lg mb-1">WhatsApp</h3>
+                  <p className="text-sm text-[#3b3b3b] mb-1">
+                    Fastest support for quick questions & bespoke requests.
+                  </p>
+                  <a
+                    href="https://wa.me/2348000000000"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm link--underline"
+                  >
+                    +234 706 267 6821
+                  </a>
+                </div>
               </div>
-              <div>
-                <h3 className="font-medium mb-1">WhatsApp</h3>
-                <p className="text-[#3b3b3b] text-sm mb-2">
-                  Chat with us directly
-                </p>
-                <a
-                  href="https://wa.me/2348000000000"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#453121] hover:underline text-sm"
-                >
-                  +234 800 000 0000
-                </a>
+              <div className="flex items-start gap-4">
+                <div>
+                  <h3 className="font-medium text-lg mb-1">Phone</h3>
+                  <p className="text-sm text-[#3b3b3b] mb-1">
+                    Mon–Fri, 9:00–18:00
+                  </p>
+                  <a
+                    href="tel:+2348000000000"
+                    className="text-sm link--underline"
+                  >
+                    +234 706 267 6821
+                  </a>
+                </div>
               </div>
-            </div>
-
-            {/* Phone */}
-            <div className="flex items-start gap-4 pb-6 border-b border-grey">
-              <div className="shrink-0">
-                <BsPhone size={24} />
+              <div className="flex items-start gap-4">
+                <div>
+                  <h3 className="font-medium text-lg mb-1">Email</h3>
+                  <p className="text-sm text-[#3b3b3b] mb-1">
+                    We aim to reply within 1 business day.
+                  </p>
+                  <a
+                    href="mailto:contact@nnadiluxurynative.com"
+                    className="text-sm link--underline"
+                  >
+                    contact@nnadiluxurynative.com
+                  </a>
+                </div>
               </div>
-              <div>
-                <h3 className="font-medium mb-1">Phone</h3>
-                <p className="text-[#3b3b3b] text-sm mb-2">
-                  Call us during business hours
-                </p>
-                <a
-                  href="tel:+2348000000000"
-                  className="text-[#453121] hover:underline text-sm"
-                >
-                  +234 800 000 0000
-                </a>
+              <div className="flex items-start gap-4">
+                <div>
+                  <h3 className="font-medium text-lg mb-1">Address</h3>
+                  <p className="text-sm text-[#3b3b3b] mb-1">
+                    Available by appointment only.
+                  </p>
+                  <p className="text-sm ">Enugu, Nigeria</p>
+                </div>
               </div>
-            </div>
-
-            {/* Email */}
-            <div className="flex items-start gap-4 pb-6 border-b border-grey">
-              <div className="shrink-0">
-                <BsEnvelope size={24} />
-              </div>
-              <div>
-                <h3 className="font-medium mb-1">Email</h3>
-                <p className="text-[#3b3b3b] text-sm mb-2">
-                  Send us an email anytime
-                </p>
-                <a
-                  href="mailto:contact@nnadiluxurynative.com"
-                  className="text-[#453121] hover:underline text-sm"
-                >
-                  contact@nnadiluxurynative.com
-                </a>
-              </div>
-            </div>
-
-            {/* Business Hours */}
-            <div className="flex items-start gap-4 pb-6 border-b border-grey">
-              <div className="shrink-0">
-                <BsClock size={24} />
-              </div>
-              <div>
-                <h3 className="font-medium mb-1">Business Hours</h3>
-                <p className="text-[#3b3b3b] text-sm">
-                  Monday - Friday: 9:00 AM - 6:00 PM
-                </p>
-                <p className="text-[#3b3b3b] text-sm">
-                  Saturday: 10:00 AM - 4:00 PM
-                </p>
-                <p className="text-[#3b3b3b] text-sm">Sunday: Closed</p>
-              </div>
-            </div>
-
-            {/* Visit Us */}
-            <div className="pt-2">
-              <h3 className="font-medium mb-2">Visit Our Store</h3>
-              <p className="text-[#3b3b3b] text-sm mb-4">
-                We operate by appointment only to ensure personalized attention.
-                Please contact us to schedule your visit.
-              </p>
-              <p className="text-sm">123 Luxury Avenue, Lagos, Nigeria</p>
             </div>
           </div>
-        </div>
 
-        {/* Contact Form */}
-        <div>
-          <h2 className="text-2xl font-medium mb-6">Send us a Message</h2>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-2">
-                Full Name *
-              </label>
-              <input
+          {/* Right: Form */}
+          <div>
+            <h2 className="text-2xl font-medium mb-6">Send us a Message</h2>
+            <Form onSubmit={handleSubmit} message={message}>
+              <Form.Input
                 type="text"
-                id="name"
+                placeholder="Full name"
+                required
                 name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 h-11 border border-grey focus:outline-none focus:border-[#121212]"
               />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2">
-                Email Address *
-              </label>
-              <input
+              <Form.Input
                 type="email"
-                id="email"
+                placeholder="Email"
+                required
                 name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 h-11 border border-grey focus:outline-none focus:border-[#121212]"
               />
-            </div>
-
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium mb-2">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full px-3 py-2 h-11 border border-grey focus:outline-none focus:border-[#121212]"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="subject"
-                className="block text-sm font-medium mb-2"
-              >
-                Subject *
-              </label>
-              <input
+              <Form.Input
                 type="text"
-                id="subject"
+                name="phone"
+                placeholder="Phone number"
+                required
+              />
+              <Form.Input
+                type="text"
                 name="subject"
-                value={formData.subject}
-                onChange={handleChange}
+                placeholder="Subject"
                 required
-                className="w-full px-3 py-2 h-11 border border-grey focus:outline-none focus:border-[#121212]"
               />
-            </div>
-
-            <div>
-              <label
-                htmlFor="message"
-                className="block text-sm font-medium mb-2"
-              >
-                Message *
-              </label>
-              <textarea
-                id="message"
+              <Form.Textarea
                 name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
                 rows={6}
-                className="w-full px-3 py-2 border border-grey focus:outline-none focus:border-[#121212] resize-none"
+                placeholder="Your message"
+                required
               />
-            </div>
-
-            <Button
-              type="submit"
-              size="lg"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Sending..." : "Send Message"}
-            </Button>
-          </form>
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full mt-3"
+                disabled={loading}
+              >
+                {loading ? <Spinner /> : "Send message"}
+              </Button>
+            </Form>
+          </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 }
 

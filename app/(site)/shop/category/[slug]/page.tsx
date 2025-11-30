@@ -1,71 +1,64 @@
 "use client";
-import Container from "@/app/_components/Container";
-import Modal from "@/app/_components/modal/Modal";
 import { useModalContext } from "@/app/_components/modal/ModalContext";
-import NoProductsFilter from "@/app/_components/product/NoProductsFilter";
-import ProductItem from "@/app/_components/product/ProductItem";
 import type { Product } from "@/app/_types/product";
-import { Setting4 } from "iconsax-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsChevronDown, BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
+import { Setting4 } from "iconsax-react";
+import NoProductsFilter from "@/app/_components/product/NoProductsFilter";
+import ProductItem from "@/app/_components/product/ProductItem";
+import Modal from "@/app/_components/modal/Modal";
+import Container from "@/app/_components/Container";
 import Button from "@/app/_components/Button";
 import Form from "@/app/_components/Form";
 import Loader from "@/app/_components/product/Loader";
 import useProductStore from "@/app/_stores/productStore";
 
-function page() {
+export default function CategoryPage() {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [products, setProducts] = useState<Product[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [loading, setLoading] = useState<boolean>(true);
-  const { fetchProducts, products } = useProductStore.getState();
+  const { slug } = useParams();
+  const { getProductsByCategory } = useProductStore.getState();
 
+  // Fetch products for this category via search term
   useEffect(() => {
     (async () => {
       try {
-        // Fetch products
         setLoading(true);
-        await fetchProducts();
+        const res = await getProductsByCategory(String(slug));
+        setProducts(res);
       } finally {
         setLoading(false);
       }
     })();
-  }, [fetchProducts]);
+  }, [slug, getProductsByCategory]);
 
-  // Read from URL on mount and when searchParams change
+  // Read filters from URL
   const urlSort = searchParams.get("sort") || "newest";
   const urlPrice = searchParams.get("price") || "all";
   const [sortBy, setSortBy] = useState(urlSort);
   const [filterPrice, setFilterPrice] = useState(urlPrice);
-  // we'll use the shared Modal component for mobile filters
 
-  // Keep state in sync with URL
   useEffect(() => {
     setSortBy(urlSort);
     setFilterPrice(urlPrice);
   }, [urlSort, urlPrice]);
+
   const itemsPerPage = 12;
-
-  // Get current page from URL, default to 1
   const currentPageFromUrl = parseInt(searchParams.get("page") || "1", 10);
-  // Local page state to render immediately on user interaction (avoids lag while router.push updates URL)
   const [page, setPage] = useState<number>(currentPageFromUrl);
-
-  // Keep local page in sync with URL (handles back/forward navigation)
   useEffect(() => {
     if (currentPageFromUrl !== page) setPage(currentPageFromUrl);
   }, [currentPageFromUrl]);
 
-  // Filter and sort products (adapted to shared `Product` type)
+  const priceOf = (p: Product) => p.materials?.[0]?.price ?? 0;
+
   const getFilteredAndSortedProducts = () => {
-    // Ensure we copy the array before mutating (sort/reverse)
-    let filtered: Product[] = [...(products as Product[])];
+    let filtered: Product[] = [...products];
 
-    // Helper to derive a numeric price from the product
-    const priceOf = (p: Product) => p.materials?.[0]?.price ?? 0;
-
-    // Filter by price
     switch (filterPrice) {
       case "under-200":
         filtered = filtered.filter((p) => priceOf(p) < 200000);
@@ -80,7 +73,6 @@ function page() {
         break;
     }
 
-    // Sort
     switch (sortBy) {
       case "newest":
         filtered = filtered.sort((a, b) => {
@@ -114,8 +106,6 @@ function page() {
   };
 
   const filteredProducts = getFilteredAndSortedProducts();
-
-  // Pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage;
   const paginatedProducts = filteredProducts.slice(
@@ -123,7 +113,6 @@ function page() {
     startIndex + itemsPerPage
   );
 
-  // Update URL when filters change
   const handleFilterChange = (newSort?: string, newPrice?: string) => {
     const sort = newSort ?? sortBy;
     const price = newPrice ?? filterPrice;
@@ -131,14 +120,12 @@ function page() {
     params.set("sort", sort);
     params.set("price", price);
     params.set("page", "1");
-    // update local page state immediately for instant UI response
     setPage(1);
-    router.push(`/shop?${params.toString()}`);
+    router.push(`/shop/category/${slug}?${params.toString()}`);
   };
 
   const hasActiveFilters = sortBy !== "newest" || filterPrice !== "all";
 
-  // Mobile filters content rendered inside Modal.Window. Uses modal context to close after applying.
   function MobileFiltersContent() {
     const { close } = useModalContext();
     const [localPrice, setLocalPrice] = useState<string>(filterPrice);
@@ -209,34 +196,58 @@ function page() {
   return (
     <Modal>
       <div className="py-12">
-        {/* Filters and Sort */}
-        <div>
-          <Container>
-            <Container.Row className="flex-col gap-y-0">
-              <Container.Row.Column className="mb-8">
-                <h1 className="text-3xl w-full text-center sm:text-4xl font-medium">
-                  Shop
-                </h1>
-              </Container.Row.Column>
-              <Container.Row.Column>
-                <div className="w-full">
-                  {/* Desktop: inline filters */}
-                  <div className="hidden sm:flex justify-between flex-wrap items-center gap-4">
-                    <div className="flex gap-3 items-center">
-                      <span className="font-medium">Filter:</span>
+        <Container>
+          <Container.Row className="flex-col gap-y-0">
+            <Container.Row.Column className="mb-8">
+              <h1 className="text-3xl sm:text-4xl w-full text-center capitalize font-medium">
+                {String(slug).replace(/-/g, " ")}
+              </h1>
+            </Container.Row.Column>
+            <Container.Row.Column>
+              {/* Filters under heading */}
+              <div className="w-full">
+                {/* Desktop filters */}
+                <div className="hidden sm:flex justify-between flex-wrap items-center gap-4">
+                  <div className="flex gap-3 items-center">
+                    <span className="font-medium">Filter:</span>
+                    <div className="relative">
+                      <select
+                        value={filterPrice}
+                        onChange={(e) =>
+                          handleFilterChange(sortBy, e.target.value)
+                        }
+                        className="appearance-none px-3 pr-10 text-sm py-2 border rounded-xs border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+                        aria-label="Filter by price"
+                      >
+                        <option value="all">All Prices</option>
+                        <option value="under-200">Under ₦200K</option>
+                        <option value="200-300">₦200K - ₦300K</option>
+                        <option value="over-300">Over ₦300K</option>
+                      </select>
+                      <BsChevronDown
+                        size={16}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-8">
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium">Sort By:</span>
                       <div className="relative">
                         <select
-                          value={filterPrice}
+                          value={sortBy}
                           onChange={(e) =>
-                            handleFilterChange(sortBy, e.target.value)
+                            handleFilterChange(e.target.value, filterPrice)
                           }
-                          className="appearance-none px-3 pr-10 text-sm py-2 border rounded-xs border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
-                          aria-label="Filter by price"
+                          className="appearance-none rounded-xs px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
+                          aria-label="Sort products"
                         >
-                          <option value="all">All Prices</option>
-                          <option value="under-200">Under ₦200K</option>
-                          <option value="200-300">₦200K - ₦300K</option>
-                          <option value="over-300">Over ₦300K</option>
+                          <option value="newest">Newest</option>
+                          <option value="featured">Featured</option>
+                          <option value="price-low">Price: Low to High</option>
+                          <option value="price-high">Price: High to Low</option>
+                          <option value="a-z">A-Z</option>
+                          <option value="z-a">Z-A</option>
                         </select>
                         <BsChevronDown
                           size={16}
@@ -244,72 +255,40 @@ function page() {
                         />
                       </div>
                     </div>
-                    <div className="flex items-center gap-8">
-                      <div className="flex items-center gap-3">
-                        <span className="font-medium">Sort By:</span>
-                        <div className="relative">
-                          <select
-                            value={sortBy}
-                            onChange={(e) =>
-                              handleFilterChange(e.target.value, filterPrice)
-                            }
-                            className="appearance-none rounded-xs px-3 pr-10 text-sm py-2 border border-[#767676] bg-white cursor-pointer transition-all font-medium  min-h-10 *:font-sans"
-                            aria-label="Sort products"
-                          >
-                            <option value="newest">Newest</option>
-                            <option value="featured">Featured</option>
-                            <option value="price-low">
-                              Price: Low to High
-                            </option>
-                            <option value="price-high">
-                              Price: High to Low
-                            </option>
-                            <option value="a-z">A-Z</option>
-                            <option value="z-a">Z-A</option>
-                          </select>
-                          <BsChevronDown
-                            size={16}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-                          />
-                        </div>
-                      </div>
-                      <span>
-                        <p className="text-sm">
-                          {filteredProducts.length} product
-                          {filteredProducts.length !== 1 && "s"}
-                        </p>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Mobile: filter button uses Modal.Open */}
-                  <div className="sm:hidden flex items-center justify-between">
-                    <Modal.Open opens="shop-filters">
-                      <button
-                        className="cursor-pointer hover:underline flex items-center gap-2"
-                        aria-controls="mobile-filters"
-                      >
-                        <Setting4 size={16} variant="Outline" color="#121212" />
-                        <span className="">Filter and sort</span>
-                      </button>
-                    </Modal.Open>
-                    <div>
+                    <span>
                       <p className="text-sm">
-                        {filteredProducts.length} product
-                        {filteredProducts.length !== 1 && "s"}
+                        {filteredProducts.length} products
                       </p>
-                    </div>
+                    </span>
                   </div>
-
-                  {/* Mobile filters rendered via shared Modal.Window */}
-                  <Modal.Window name="shop-filters" title={"Filter and sort"}>
-                    <MobileFiltersContent />
-                  </Modal.Window>
                 </div>
-              </Container.Row.Column>
-            </Container.Row>
-          </Container>
-        </div>
+
+                {/* Mobile filters */}
+                <div className="sm:hidden flex items-center justify-between">
+                  <Modal.Open opens="category-filters">
+                    <button
+                      className="cursor-pointer hover:underline flex items-center gap-2"
+                      aria-controls="mobile-filters"
+                    >
+                      <Setting4 size={16} variant="Outline" color="#121212" />
+                      <span>Filter and sort</span>
+                    </button>
+                  </Modal.Open>
+                  <div>
+                    <p className="text-sm">
+                      {filteredProducts.length} products
+                    </p>
+                  </div>
+                </div>
+
+                {/* Mobile filters modal */}
+                <Modal.Window name="category-filters" title={"Filter and sort"}>
+                  <MobileFiltersContent />
+                </Modal.Window>
+              </div>
+            </Container.Row.Column>
+          </Container.Row>
+        </Container>
 
         {/* Products Grid */}
         <Container>
@@ -319,19 +298,21 @@ function page() {
                 <Loader count={itemsPerPage} />
               ) : paginatedProducts.length === 0 ? (
                 hasActiveFilters ? (
-                  <NoProductsFilter onReset={() => router.push(`/shop`)} />
+                  <NoProductsFilter
+                    onReset={() => router.push(`/shop/category/${slug}`)}
+                  />
                 ) : (
                   <div className="text-center py-10">
                     <h2 className="text-xl font-medium mb-2">
-                      No products available
+                      No products found
                     </h2>
                     <p className="text-[#3b3b3b]">
-                      Check back soon for new arrivals.
+                      This category doesn't have any products yet.
                     </p>
                   </div>
                 )
               ) : (
-                <div className="grid grid-cols-1 min-[500px]:grid-cols-2 lg:grid-cols-3 gap-6 gap-y-8">
+                <div className="grid grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-3 gap-6 gap-y-8">
                   {paginatedProducts.map((product) => (
                     <ProductItem key={product._id} product={product} />
                   ))}
@@ -339,7 +320,7 @@ function page() {
               )}
             </Container.Row.Column>
 
-            {/* Pagination - show only when not loading and more than 1 page */}
+            {/* Pagination */}
             {!loading && totalPages > 1 && (
               <div className="flex items-center justify-center gap-2 mt-6 w-full">
                 {page > 1 && (
@@ -350,9 +331,10 @@ function page() {
                         searchParams.toString()
                       );
                       params.set("page", String(prev));
-                      // update local page immediately for snappy UI
                       setPage(prev);
-                      router.push(`/shop?${params.toString()}`);
+                      router.push(
+                        `/shop/category/${slug}?${params.toString()}`
+                      );
                       window.scrollTo({
                         top: 0,
                         behavior: "auto" as ScrollBehavior,
@@ -376,9 +358,10 @@ function page() {
                             searchParams.toString()
                           );
                           params.set("page", String(pNum));
-                          // update local page immediately for snappy UI
                           setPage(pNum);
-                          router.push(`/shop?${params.toString()}`);
+                          router.push(
+                            `/shop/category/${slug}?${params.toString()}`
+                          );
                           window.scrollTo({
                             top: 0,
                             behavior: "auto" as ScrollBehavior,
@@ -405,9 +388,10 @@ function page() {
                         searchParams.toString()
                       );
                       params.set("page", String(next));
-                      // update local page immediately for snappy UI
                       setPage(next);
-                      router.push(`/shop?${params.toString()}`);
+                      router.push(
+                        `/shop/category/${slug}?${params.toString()}`
+                      );
                       window.scrollTo({
                         top: 0,
                         behavior: "auto" as ScrollBehavior,
@@ -427,5 +411,3 @@ function page() {
     </Modal>
   );
 }
-
-export default page;

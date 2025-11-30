@@ -15,7 +15,7 @@ export default function NoProductsFilter({
   return (
     <div className="py-12 text-center">
       <h3 className="text-xl font-medium mb-2">{title}</h3>
-      <p className="text-sm  mb-6">{description}</p>
+      <p className="mb-6 text-[#3b3b3b]">{description}</p>
       <div className="flex justify-center">
         <Button size="md" onClick={onReset}>
           Reset filters

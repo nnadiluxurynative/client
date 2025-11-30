@@ -29,51 +29,14 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section className="py-16 lg:py-24">
-        <Container>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-              Featured Products
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Handpicked selections from our latest collection
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {[1, 2, 3, 4].map((item) => (
-              <div key={item} className="group">
-                <Link href="/shop">
-                  <div className="aspect-3/4 bg-gray-200 mb-3 overflow-hidden">
-                    <div className="w-full h-full group-hover:scale-105 transition-transform duration-300" />
-                  </div>
-                  <h3 className="font-medium mb-1">Product Name</h3>
-                  <p className="text-gray-600 text-sm mb-2">Category</p>
-                  <p className="font-bold">₦150,000</p>
-                </Link>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center">
-            <Link href="/shop">
-              <Button size="lg" color="white">
-                View All Products
-              </Button>
-            </Link>
-          </div>
-        </Container>
-      </section>
-
       {/* Categories */}
       <section className="py-16 lg:py-24 bg-gray-50">
         <Container>
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-              Shop by Category
+            <h2 className="text-3xl lg:text-4xl font-medium mb-3">
+              Browse Collections
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-[#3b3b3b] max-w-2xl mx-auto">
               Explore our curated collections
             </p>
           </div>
@@ -112,6 +75,43 @@ function HomePage() {
                 </div>
               </Link>
             ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* Featured Products */}
+      <section className="py-16 lg:py-24">
+        <Container>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-medium mb-3">
+              Featured Products
+            </h2>
+            <p className="text-[#3b3b3b] max-w-2xl mx-auto">
+              Handpicked selections from our latest collection
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {[1, 2, 3, 4].map((item) => (
+              <div key={item} className="group">
+                <Link href="/shop">
+                  <div className="aspect-3/4 bg-gray-200 mb-3 overflow-hidden">
+                    <div className="w-full h-full group-hover:scale-105 transition-transform duration-300" />
+                  </div>
+                  <h3 className="font-medium mb-1">Product Name</h3>
+                  <p className="text-gray-600 text-sm mb-2">Category</p>
+                  <p className="font-bold">₦150,000</p>
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link href="/shop">
+              <Button size="lg" color="white">
+                View All Products
+              </Button>
+            </Link>
           </div>
         </Container>
       </section>

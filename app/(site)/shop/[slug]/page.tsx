@@ -177,7 +177,7 @@ export default function page() {
           {/* Left: Images */}
           <Container.Row.Column className="w-full lg:w-1/2">
             {loading ? (
-              <div className="flex gap-6">
+              <div className="flex flex-row-reverse lg:flex-row gap-6">
                 {/* Thumbnails skeleton (desktop) */}
                 <div className="hidden sm:flex w-1/5 flex-col gap-3">
                   {[1, 2, 3].map((i) => (
@@ -199,7 +199,7 @@ export default function page() {
                 </div>
               </div>
             ) : (
-              <div className="flex gap-6">
+              <div className="flex flex-row-reverse lg:flex-row gap-6">
                 {/* Thumbnails (desktop only) */}
                 <div className="hidden sm:flex w-1/5 flex-col gap-3">
                   {images.map((src, idx) => (

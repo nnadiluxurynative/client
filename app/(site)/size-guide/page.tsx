@@ -152,7 +152,7 @@ export default function SizeChartPage() {
         </p>
         <div className="flex justify-center">
           <Link href="/account/measurements">
-            <Button>Create profile</Button>
+            <Button size="lg">Create profile</Button>
           </Link>
         </div>
       </section>

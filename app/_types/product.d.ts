@@ -26,6 +26,7 @@ export type ProductsState = {
   getProduct: (idOrSlug: string) => Promise<Product | null>;
   getRelatedProducts: (idOrSlug: string) => Promise<Product[]>;
   getFeaturedProducts: () => Promise<Product[]>;
+  getProductsByCategory: (categorySlug: string) => Promise<Product[]>;
   fetchProducts: () => Promise<Product[]>;
   searchProducts: (searchTerm: string) => Promise<Product[]>;
 };

@@ -81,7 +81,7 @@ function Window({
       <div
         onClick={handleClose}
         className={twMerge(
-          "fixed left-0 transition-all h-full  w-full pointer-events-none bg-black duration-100 ease-out opacity-0 z-50",
+          "fixed left-0 transition-all h-full  w-full pointer-events-none bg-black duration-100 ease-out opacity-0 z-60",
           isActive && "opacity-30 pointer-events-auto"
         )}
       />

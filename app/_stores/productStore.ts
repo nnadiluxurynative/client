@@ -82,6 +82,18 @@ export const useProductStore = create<ProductsState>((set, get) => ({
     }
   },
 
+  getProductsByCategory: async (categorySlug: string) => {
+    try {
+      const res = await API.get<GenericAPIResponse<Product[]>>(
+        `/products/category/${encodeURIComponent(categorySlug)}`
+      );
+      return res.data.data ?? [];
+    } catch (err: any) {
+      const message = handleErrorMessage(err, "Failed to fetch products");
+      throw Error(message);
+    }
+  },
+
   getFeaturedProducts: async () => {
     try {
       const res = await API.get<GenericAPIResponse<Product[]>>(
