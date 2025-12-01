@@ -1,5 +1,5 @@
 import { Address } from "./address";
-import { CartItem } from "./Cart";
+import { CartItem } from "./cart";
 
 export type Order = {
   status: "completed" | "pending" | "cancelled";

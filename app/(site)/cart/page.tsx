@@ -75,7 +75,7 @@ export default function CartPage() {
                   {item.image && (
                     <Link
                       href={`/shop/${item.product.slug}`}
-                      className="h-44 overflow-hidden bg-gray-100 shrink-0"
+                      className="h-44 w-[114px] overflow-hidden bg-gray-100 shrink-0"
                     >
                       <img
                         src={item.image}

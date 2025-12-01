@@ -103,7 +103,7 @@ export default function CartSidebar() {
                     <Link
                       href={`/shop/${item.product.slug}`}
                       onClick={toggleCart}
-                      className="h-32
+                      className="h-32 w-[84px]
                        overflow-hidden bg-gray-100 shrink-0"
                     >
                       <img
