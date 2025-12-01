@@ -28,16 +28,16 @@ function Footer() {
             </h4>
             <ul className="flex flex-col gap-y-3 [&_a]:hover:text-[#e3e3e3]">
               <li>
-                <Link href="/shop">Home</Link>
+                <Link href="/">Home</Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/about">About</Link>
-              </li>
+              </li> */}
               <li>
                 <Link href="/contact">Contact</Link>
               </li>
               <li>
-                <Link href="/faq">FAQ</Link>
+                <Link href="/faqs">FAQ</Link>
               </li>
             </ul>
           </Container.Row.Column>
@@ -53,7 +53,7 @@ function Footer() {
                 <Link href="/collections">Collections</Link>
               </li>
               <li>
-                <Link href="/cart">Search</Link>
+                <Link href="/search">Search</Link>
               </li>
             </ul>
           </Container.Row.Column>
