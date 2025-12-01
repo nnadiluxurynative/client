@@ -8,15 +8,16 @@ const CACHE_DURATION_MS = 15 * 60 * 1000; // 5 minutes
 
 export const useProductStore = create<ProductsState>((set, get) => ({
   products: [],
-  lastFetched: null,
+  lastFetchedProducts: null,
+  lastFetchedFeaturedProducts: null,
   featuredProducts: [],
 
   fetchProducts: async () => {
-    const { lastFetched } = get();
+    const { lastFetchedProducts } = get();
     const now = new Date();
     if (
-      lastFetched &&
-      now.getTime() - lastFetched.getTime() < CACHE_DURATION_MS
+      lastFetchedProducts &&
+      now.getTime() - lastFetchedProducts.getTime() < CACHE_DURATION_MS
     ) {
       // Return cached products if within cache duration
       return get().products;
@@ -25,7 +26,7 @@ export const useProductStore = create<ProductsState>((set, get) => ({
     try {
       const res = await API.get<GenericAPIResponse<Product[]>>(`/products`);
       const data = res.data.data ?? [];
-      set({ products: data, lastFetched: new Date() });
+      set({ products: data, lastFetchedProducts: new Date() });
       return data;
     } catch (err: any) {
       const message = handleErrorMessage(err, "Failed to fetch products");
@@ -95,12 +96,21 @@ export const useProductStore = create<ProductsState>((set, get) => ({
   },
 
   getFeaturedProducts: async () => {
+    const { lastFetchedFeaturedProducts } = get();
+    const now = new Date();
+    if (
+      lastFetchedFeaturedProducts &&
+      now.getTime() - lastFetchedFeaturedProducts.getTime() < CACHE_DURATION_MS
+    ) {
+      // Return cached featured products if within cache duration
+      return get().featuredProducts;
+    }
     try {
       const res = await API.get<GenericAPIResponse<Product[]>>(
         `/products?isFeatured=true`
       );
       const data = res.data.data ?? [];
-      set({ featuredProducts: data });
+      set({ featuredProducts: data, lastFetchedFeaturedProducts: new Date() });
       return data;
     } catch (err: any) {
       const message = handleErrorMessage(

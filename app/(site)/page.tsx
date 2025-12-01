@@ -1,28 +1,50 @@
+"use client";
 import Link from "next/link";
 import Button from "@/app/_components/Button";
 import Container from "@/app/_components/Container";
+import React, { useEffect, useState } from "react";
+import useProductStore from "../_stores/productStore";
+import ProductItem from "../_components/product/ProductItem";
+import Loader from "../_components/product/Loader";
+import { ArrowRight } from "iconsax-react";
 
 function HomePage() {
+  const [loading, setLoading] = useState(true);
+  const { getFeaturedProducts, featuredProducts } = useProductStore();
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        await getFeaturedProducts();
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [getFeaturedProducts]);
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative h-[600px] lg:h-[700px] bg-gray-100">
-        <div className="absolute inset-0 bg-linear-to-r from-black/50 to-transparent">
+      <section
+        className="relative h-[600px] lg:h-[700px] bg-gray-500"
+        style={{
+          backgroundImage: "url('/hero.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/30">
           <Container className="h-full">
             <div className="flex items-center h-full">
-              <div className="max-w-xl text-white">
-                <h1 className="text-4xl lg:text-6xl font-bold mb-4">
-                  Luxury Native Wear
+              <div className="text-white max-w-2xl mx-auto text-center px-4">
+                <h1 className="text-5xl lg:text-7xl text-shadow-lg font-bold mb-8 leading-tight">
+                  Discover Timeless Native Fashion
                 </h1>
-                <p className="text-lg lg:text-xl mb-8">
-                  Discover exquisite traditional attire crafted with premium
-                  materials and attention to detail
-                </p>
-                <Link href="/shop">
-                  <Button size="lg" className="px-8">
-                    Shop Collection
-                  </Button>
-                </Link>
+                <div className="flex justify-center">
+                  <Link href="/shop">
+                    <Button size="xl">Shop Collection</Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </Container>
@@ -36,44 +58,59 @@ function HomePage() {
             <h2 className="text-3xl lg:text-4xl font-medium mb-3">
               Browse Collections
             </h2>
-            <p className="text-[#3b3b3b] max-w-2xl mx-auto">
-              Explore our curated collections
+            <p className="text-[#3b3b3b] lg:text-lg max-w-2xl mx-auto">
+              Discover our carefully curated collections
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {[
-              { name: "Men's Collection", image: "" },
-              { name: "Women's Collection", image: "" },
-              { name: "Premium Fabrics", image: "" },
+              {
+                name: "Casual",
+                image: "/casual.jpg",
+                link: "/shop/category/casual",
+              },
+              {
+                name: "Ceremony",
+                image: "/ceremony.jpg",
+                link: "/shop/category/ceremony",
+              },
+              {
+                name: "Classic",
+                image: "/classic.jpg",
+                link: "/shop/category/classic",
+              },
+              {
+                name: "Heritage",
+                image: "/heritage.jpg",
+                link: "/shop/category/heritage",
+              },
             ].map((category, index) => (
-              <Link
-                key={index}
-                href="/shop"
-                className="group relative h-80 overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gray-300 group-hover:scale-105 transition-transform duration-300" />
-                <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <h3 className="text-2xl font-bold mb-2">{category.name}</h3>
-                  <span className="inline-flex items-center gap-2 text-sm">
-                    Shop Now
-                    <svg
-                      className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </span>
+              <div key={index} className="group">
+                <div className="overflow-hidden">
+                  <Link
+                    href={category.link || "/shop"}
+                    className="flex relative overflow-hidden"
+                  >
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className=" w-full h-full block object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </Link>
                 </div>
-              </Link>
+                <Link
+                  href={category.link || "/shop"}
+                  className="flex items-center gap-2 mt-2"
+                >
+                  <h3 className="text-xl font-medium">{category.name}</h3>
+                  <ArrowRight
+                    color="#121212"
+                    className="mt-0.75 group-hover:translate-x-1 transition-transform"
+                    size={20}
+                  />
+                </Link>
+              </div>
             ))}
           </div>
         </Container>
@@ -84,35 +121,37 @@ function HomePage() {
         <Container>
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-medium mb-3">
-              Featured Products
+              Featured Outfits
             </h2>
-            <p className="text-[#3b3b3b] max-w-2xl mx-auto">
+            <p className="text-[#3b3b3b] max-w-2xl lg:text-lg mx-auto">
               Handpicked selections from our latest collection
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {[1, 2, 3, 4].map((item) => (
-              <div key={item} className="group">
+          {loading ? (
+            <Loader
+              imgHeight="sm:h-[450px]"
+              count={4}
+              className="lg:grid-cols-3"
+            />
+          ) : featuredProducts.length === 0 ? (
+            <p>No featured products available.</p>
+          ) : (
+            <React.Fragment>
+              <div className="grid grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {featuredProducts.map((product, i) => (
+                  <ProductItem key={i} product={product} />
+                ))}
+              </div>
+              <div className="flex justify-center">
                 <Link href="/shop">
-                  <div className="aspect-3/4 bg-gray-200 mb-3 overflow-hidden">
-                    <div className="w-full h-full group-hover:scale-105 transition-transform duration-300" />
-                  </div>
-                  <h3 className="font-medium mb-1">Product Name</h3>
-                  <p className="text-gray-600 text-sm mb-2">Category</p>
-                  <p className="font-bold">₦150,000</p>
+                  <Button size="lg" color="white">
+                    View all products
+                  </Button>
                 </Link>
               </div>
-            ))}
-          </div>
-
-          <div className="text-center">
-            <Link href="/shop">
-              <Button size="lg" color="white">
-                View All Products
-              </Button>
-            </Link>
-          </div>
+            </React.Fragment>
+          )}
         </Container>
       </section>
     </div>

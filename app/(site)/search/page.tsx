@@ -372,7 +372,7 @@ export default function SearchPage() {
           <Container.Row className="pb-12 py-6 sm:py-10">
             <Container.Row.Column>
               {loading ? (
-                <Loader count={itemsPerPage} />
+                <Loader count={6} />
               ) : paginatedProducts.length === 0 ? (
                 hasSearched ? (
                   hasActiveFilters ? (

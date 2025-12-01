@@ -2,7 +2,7 @@ import { twMerge } from "tailwind-merge";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   color?: "black" | "white";
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
 }
 
 const colorClasses = {
@@ -14,8 +14,9 @@ const colorClasses = {
 
 const sizeClasses = {
   sm: "min-w-[100px] max-h-10 px-3 py-3 text-sm",
-  md: "min-w-[120px] max-h-11 px-4 py-3 text-base", // your current default
+  md: "min-w-[120px] max-h-11 px-4 py-3 text-base",
   lg: "min-w-[150px] max-h-13 px-6 py-4 text-base",
+  xl: "min-w-[180px] max-h-14 px-8 py-5 text-lg",
 };
 
 export default function Button({
