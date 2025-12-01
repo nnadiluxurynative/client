@@ -5,6 +5,7 @@ import ScrollTop from "@/app/_components/ScrollTop";
 import localFont from "next/font/local";
 import "@/app/_styles/globals.css";
 
+// Metadata for the application
 export const metadata: Metadata = {
   title: "Nnadi Luxury native - The Luxury Native",
 };
