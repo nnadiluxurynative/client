@@ -6,7 +6,7 @@ import { BsDash, BsPlus, BsXLg } from "react-icons/bs";
 import Link from "next/link";
 import Button from "@/app/_components/Button";
 import Container from "@/app/_components/Container";
-import { CartItem } from "@/app/_types/Cart";
+import { CartItem } from "@/app/_types/cart";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, getCartTotal, clearCart } =
