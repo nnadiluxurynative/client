@@ -9,6 +9,7 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import Button from "../Button";
 import { useRouter } from "next/navigation";
+import { CartItem } from "@/app/_types/cart";
 
 export default function CartSidebar() {
   const {
@@ -76,7 +77,7 @@ export default function CartSidebar() {
             </div>
           ) : (
             <div className="space-y-4">
-              {items.map((item) => (
+              {items.map((item: CartItem) => (
                 <div
                   key={`${item.product._id}-${item.color}-${item.material}`}
                   className="flex gap-4 pb-4 border-b border-grey relative"
