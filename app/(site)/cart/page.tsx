@@ -6,6 +6,7 @@ import { BsDash, BsPlus, BsXLg } from "react-icons/bs";
 import Link from "next/link";
 import Button from "@/app/_components/Button";
 import Container from "@/app/_components/Container";
+import { CartItem } from "@/app/_types/Cart";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, getCartTotal, clearCart } =
@@ -49,7 +50,7 @@ export default function CartPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 gap-x-[30px]">
             {/* Cart Items */}
             <div className="lg:col-span-2 space-y-4 lg:pr-[30px]">
-              {items.map((item) => (
+              {items.map((item: CartItem) => (
                 <div
                   key={`${item.product._id}-${item.color}-${item.material}-${item.size}`}
                   className="flex gap-4 pb-4 border-b border-grey relative"
